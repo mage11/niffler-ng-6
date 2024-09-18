@@ -12,6 +12,7 @@ public class MainPage {
   private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
   private final SelenideElement menuButton = $("button[aria-label='Menu']");
   private final SelenideElement profileOption = $("a[href='/profile']");
+  private final SelenideElement friendsOption = $("a[href='/people/friends']");
   private final SelenideElement statisticBlock = $("#stat");
   private final SelenideElement spendingBlock = $("#spendings");
 
@@ -30,6 +31,13 @@ public class MainPage {
     profileOption.click();
 
     return new ProfilePage();
+  }
+
+  public FriendsPage clickToFriendsPage(){
+
+    menuButton.click();
+    friendsOption.click();
+    return new FriendsPage();
   }
 
   public MainPage headersBlocksShouldBeExists(){
