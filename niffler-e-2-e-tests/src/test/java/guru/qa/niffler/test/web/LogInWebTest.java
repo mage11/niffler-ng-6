@@ -22,7 +22,7 @@ public class LogInWebTest {
         String errorMessage = "Неверные учетные данные пользователя";
 
         Selenide.open(CFG.frontUrl(), LoginPage.class)
-            .login("PetyaMain", "123");
+            .login("PetyaMain", "321");
 
         LoginPage currentLoginPage = new LoginPage();
         currentLoginPage.shouldBeErrorMessage(errorMessage);
