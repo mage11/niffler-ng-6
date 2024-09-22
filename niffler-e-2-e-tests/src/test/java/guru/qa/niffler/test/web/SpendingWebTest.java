@@ -2,6 +2,7 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.annotation.Spending;
@@ -16,18 +17,21 @@ public class SpendingWebTest {
 
   private static final Config CFG = Config.getInstance();
 
-  @Spending(
-      username = "duck",
-      category = "Обучение",
-      description = "Обучение Advanced 2.0",
-      amount = 79990
+  @User(
+      spendings = @Spending(
+          username = "PetyaMain",
+          category = "Обучение",
+          description = "Обучение Advanced 2.0",
+          amount = 79990
+      )
   )
   @Test
   void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
     final String newDescription = "Обучение Niffler Next Generation";
 
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin("duck", "12345")
+        .login("PetyaMain", "123")
+        .headersBlocksShouldBeExists()
         .editSpending(spend.description())
         .setNewSpendingDescription(newDescription)
         .save();
