@@ -3,12 +3,10 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.LoginPage;
-import guru.qa.niffler.page.RegisterPage;
-import lombok.extern.java.Log;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 
-public class RegistrationWebTest {
+public class RegistrationTest {
 
     private static final Config CFG = Config.getInstance();
     private final String messageOfSuccessRegistration = "Congratulations! You've registered!";
