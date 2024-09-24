@@ -17,8 +17,8 @@ public class ProfileTest {
 
 
     @User(
+        username = "PetyaMain",
         categories = @Category(
-            username = "PetyaMain",
             name = "archivedCategory",
             archived = true
         )
@@ -34,8 +34,8 @@ public class ProfileTest {
     }
 
     @User(
+        username = "PetyaMain",
         categories = @Category(
-            username = "PetyaMain",
             name = "activeCategory",
             archived = false
         )
@@ -50,8 +50,8 @@ public class ProfileTest {
     }
 
     @User(
+        username = "PetyaMain",
         categories = @Category(
-            username = "PetyaMain",
             name = "archivedCategoryNotPresent",
             archived = true
         )

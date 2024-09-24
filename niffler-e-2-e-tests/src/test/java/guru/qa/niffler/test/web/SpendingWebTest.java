@@ -18,8 +18,8 @@ public class SpendingWebTest {
   private static final Config CFG = Config.getInstance();
 
   @User(
+      username = "PetyaMain",
       spendings = @Spending(
-          username = "PetyaMain",
           category = "Обучение",
           description = "Обучение Advanced 2.0",
           amount = 79990

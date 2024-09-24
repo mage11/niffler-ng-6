@@ -29,7 +29,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
                     CategoryJson category = new CategoryJson(
                         null,
                         annoCategory.name(),
-                        annoCategory.username(),
+                        anno.username(),
                         false);
 
                     CategoryJson createdCategory = categoriesApiClient.addCategory(category);
