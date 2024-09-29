@@ -18,14 +18,14 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
   }
 
   @Override
-  public void create(AuthorityEntity... authority) {
+  public void createAuthority(AuthorityEntity... authority) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
     jdbcTemplate.batchUpdate(
         "INSERT INTO authority (user_id, authority) VALUES (? , ?)",
         new BatchPreparedStatementSetter() {
           @Override
           public void setValues(PreparedStatement ps, int i) throws SQLException {
-            ps.setObject(1, authority[i].getUserId());
+            ps.setObject(1, authority[i].getUser_id());
             ps.setString(2, authority[i].getAuthority().name());
           }
 
@@ -36,4 +36,7 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
         }
     );
   }
+    @Override
+    public void delete(AuthorityEntity authority) {
+    }
 }
