@@ -60,8 +60,7 @@ public class SpendDaoJdbc implements SpendDao {
       try (PreparedStatement ps = connection.prepareStatement(
           "SELECT * " +
               "FROM spend " +
-              "WHERE id = ?;",
-          Statement.RETURN_GENERATED_KEYS
+              "WHERE id = ?;"
       )){
         ps.setObject(1, id);
         ps.execute();
@@ -95,8 +94,7 @@ public class SpendDaoJdbc implements SpendDao {
       try (PreparedStatement ps = connection.prepareStatement(
           "SELECT * " +
               "FROM spend " +
-              "WHERE username = ?",
-          Statement.RETURN_GENERATED_KEYS
+              "WHERE username = ?"
       )){
         ps.setObject(1, username);
         ps.execute();
@@ -129,8 +127,7 @@ public class SpendDaoJdbc implements SpendDao {
       try (PreparedStatement ps = connection.prepareStatement(
           "DELETE " +
               "FROM spend " +
-              "WHERE id = ?",
-          Statement.RETURN_GENERATED_KEYS
+              "WHERE id = ?"
       )){
         ps.setObject(1, spend.getId());
         ps.execute();
