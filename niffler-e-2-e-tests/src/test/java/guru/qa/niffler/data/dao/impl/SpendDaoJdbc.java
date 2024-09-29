@@ -11,7 +11,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -111,14 +110,11 @@ public class SpendDaoJdbc implements SpendDao {
             spendEntity.setUsername(rs.getString("username"));
 
             spendEntities.add(spendEntity);
-          } else {
-            return Collections.emptyList();
           }
         }
       } catch (SQLException e) {
         throw new RuntimeException(e);
       }
-
       return spendEntities;
   }
 
@@ -134,5 +130,34 @@ public class SpendDaoJdbc implements SpendDao {
       } catch (SQLException e) {
         throw new RuntimeException(e);
       }
+  }
+
+  @Override
+  public List<SpendEntity> findAll() {
+    List<SpendEntity> spendEntities = new ArrayList<>();
+    try (PreparedStatement ps = connection.prepareStatement(
+        "SELECT * " +
+            "FROM spend "
+    )){
+      ps.execute();
+
+      try(ResultSet rs = ps.getResultSet()){
+        while (rs.next()) {
+          SpendEntity spendEntity = new SpendEntity();
+          spendEntity.setCategory(rs.getObject("category_id", CategoryEntity.class));
+          spendEntity.setId(rs.getObject("id", UUID.class));
+          spendEntity.setSpendDate(rs.getDate("spend_date"));
+          spendEntity.setCurrency(CurrencyValues.valueOf(rs.getString("currency")));
+          spendEntity.setAmount(rs.getDouble("amount"));
+          spendEntity.setDescription(rs.getString("description"));
+          spendEntity.setUsername(rs.getString("username"));
+
+          spendEntities.add(spendEntity);
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    return spendEntities;
   }
 }

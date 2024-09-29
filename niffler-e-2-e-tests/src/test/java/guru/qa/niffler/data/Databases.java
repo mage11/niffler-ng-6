@@ -119,7 +119,7 @@ public class Databases {
             throw new RuntimeException(e);
         }
     }
-  private static DataSource dataSource(String jdbcUrl) {
+  public static DataSource dataSource(String jdbcUrl) {
     return dataSources.computeIfAbsent(
         jdbcUrl,
         key -> {

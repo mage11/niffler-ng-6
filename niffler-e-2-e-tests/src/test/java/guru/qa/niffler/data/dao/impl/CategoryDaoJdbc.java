@@ -1,6 +1,5 @@
 package guru.qa.niffler.data.dao.impl;
 
-import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 
@@ -10,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -120,14 +118,36 @@ public class CategoryDaoJdbc implements CategoryDao {
             categoryEntity.setName(rs.getString("name"));
             categoryEntity.setArchived(rs.getBoolean("archived"));
             categoryEntities.add(categoryEntity);
-          } else {
-            return Collections.emptyList();
           }
         }
       } catch (SQLException e) {
         throw new RuntimeException(e);
       }
       return categoryEntities;
+  }
+
+  @Override
+  public List<CategoryEntity> findAll() {
+    List<CategoryEntity> categoryEntities = new ArrayList<>();
+    try (PreparedStatement ps = connection.prepareStatement(
+        "SELECT * FROM category"
+    )) {
+      ps.execute();
+
+      try (ResultSet rs = ps.getResultSet()) {
+        while (rs.next()) {
+          CategoryEntity categoryEntity = new CategoryEntity();
+          categoryEntity.setId(rs.getObject("id", UUID.class));
+          categoryEntity.setUsername(rs.getString("username"));
+          categoryEntity.setName(rs.getString("name"));
+          categoryEntity.setArchived(rs.getBoolean("archived"));
+          categoryEntities.add(categoryEntity);
+        }
+      }
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    return categoryEntities;
   }
 
 
