@@ -31,7 +31,7 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
   }
     @Override
     public void delete(AuthorityEntity authority){
-        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).prepareStatement(
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
             "DELETE FROM authority WHERE id = ?"
         )) {
             ps.setObject(1, authority.getId());
