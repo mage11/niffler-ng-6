@@ -1,5 +1,6 @@
 package guru.qa.niffler.data.dao.impl;
 
+import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.CategoryDao;
 import guru.qa.niffler.data.entity.spend.CategoryEntity;
 
@@ -68,26 +69,6 @@ public class CategoryDaoJdbc implements CategoryDao {
     } catch (SQLException e) {
       throw new RuntimeException(e);
     }
-      try (PreparedStatement ps = holder(CFG.spendJdbcUrl()).connection().prepareStatement(
-          "SELECT * FROM category WHERE id = ?"
-      )) {
-        ps.setObject(1, id);
-        ps.execute();
-        try (ResultSet rs = ps.getResultSet()) {
-          if (rs.next()) {
-            CategoryEntity ce = new CategoryEntity();
-            ce.setId(rs.getObject("id", UUID.class));
-            ce.setUsername(rs.getString("username"));
-            ce.setName(rs.getString("name"));
-            ce.setArchived(rs.getBoolean("archived"));
-            return Optional.of(ce);
-          } else {
-            return Optional.empty();
-          }
-        }
-      } catch (SQLException e) {
-        throw new RuntimeException(e);
-      }
   }
 
   @Override

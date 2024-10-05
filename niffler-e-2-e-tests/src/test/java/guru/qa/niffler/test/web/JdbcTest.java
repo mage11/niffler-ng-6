@@ -54,4 +54,78 @@ public class JdbcTest {
     );
     System.out.println(user);
   }
+
+  @Test
+  void jdbcWithTxTest() {
+    UsersDbClient usersDbClient = new UsersDbClient();
+    UserJson user = usersDbClient.createUserJdbcWithTx(
+        new UserJson(
+            null,
+            "Petya-Test",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+    System.out.println(user);
+  }
+
+  @Test
+  void jdbcWithoutTxTest() {
+    UsersDbClient usersDbClient = new UsersDbClient();
+    UserJson user = usersDbClient.createUserJdbcWithoutTx(
+        new UserJson(
+            null,
+            "Petya-Test",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+    System.out.println(user);
+  }
+  @Test
+  void SpringJdbcWithTxTest() {
+    UsersDbClient usersDbClient = new UsersDbClient();
+    UserJson user = usersDbClient.createUserJdbcSpringWithTx(
+        new UserJson(
+            null,
+            "Petya-Test",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+    System.out.println(user);
+  }
+  @Test
+  void SpringJdbcWithoutTxTest() {
+    UsersDbClient usersDbClient = new UsersDbClient();
+    UserJson user = usersDbClient.createUserJdbcSpringWithoutTx(
+        new UserJson(
+            null,
+            "Petya-Test",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+    System.out.println(user);
+  }
 }
