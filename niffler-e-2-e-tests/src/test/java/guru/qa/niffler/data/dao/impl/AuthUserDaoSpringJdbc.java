@@ -30,16 +30,21 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
       );
       ps.setString(1, user.getUsername());
       ps.setString(2, user.getPassword());
-      ps.setBoolean(3, user.getEnabled());
-      ps.setBoolean(4, user.getAccountNonExpired());
-      ps.setBoolean(5, user.getAccountNonLocked());
-      ps.setBoolean(6, user.getCredentialsNonExpired());
+      ps.setBoolean(3, user.isEnabled());
+      ps.setBoolean(4, user.isAccountNonExpired());
+      ps.setBoolean(5, user.isAccountNonLocked());
+      ps.setBoolean(6, user.isCredentialsNonExpired());
       return ps;
     }, kh);
 
     final UUID generatedKey = (UUID) kh.getKeys().get("id");
     user.setId(generatedKey);
     return user;
+  }
+
+  @Override
+  public void deleteAuthUser(AuthUserEntity user) {
+
   }
 
   @Override

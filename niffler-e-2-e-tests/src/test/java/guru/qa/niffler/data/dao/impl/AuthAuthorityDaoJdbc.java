@@ -29,4 +29,15 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
       throw new RuntimeException(e);
     }
   }
+    @Override
+    public void delete(AuthorityEntity authority){
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).prepareStatement(
+            "DELETE FROM authority WHERE id = ?"
+        )) {
+            ps.setObject(1, authority.getId());
+            ps.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
