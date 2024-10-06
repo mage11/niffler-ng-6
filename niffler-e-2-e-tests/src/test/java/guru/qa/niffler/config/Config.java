@@ -14,8 +14,6 @@ public interface Config {
 
   String gatewayUrl();
 
-  String userdataUrl();
-
   String userdataJdbcUrl();
 
   String spendUrl();
@@ -25,4 +23,7 @@ public interface Config {
   String currencyJdbcUrl();
 
   String ghUrl();
+  String auth();
+  String gateway();
+  String userdataUrl();
 }

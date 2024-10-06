@@ -12,6 +12,7 @@ import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.UserJson;
+import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,16 +29,22 @@ public class UsersDbClient {
   private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
   private final UdUserDao udUserDao = new UdUserDaoSpringJdbc();
 
-  private final TransactionTemplate txTemplate = new TransactionTemplate(
-      new JdbcTransactionManager(
-          DataSources.dataSource(CFG.authJdbcUrl())
-      )
-  );
 
-  private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
-      CFG.authJdbcUrl(),
-      CFG.userdataJdbcUrl()
-  );
+    private final TransactionTemplate txTemplate = new TransactionTemplate(
+        new ChainedTransactionManager(
+            new JdbcTransactionManager(
+                DataSources.dataSource(CFG.authJdbcUrl())
+            ),
+            new JdbcTransactionManager(
+                DataSources.dataSource(CFG.userdataJdbcUrl())
+            )
+        )
+    );
+
+    private final XaTransactionTemplate xaTransactionTemplate = new XaTransactionTemplate(
+        CFG.authJdbcUrl(),
+        CFG.userdataJdbcUrl()
+    );
 
   public UserJson createUser(UserJson user) {
     return xaTransactionTemplate.execute(() -> {
