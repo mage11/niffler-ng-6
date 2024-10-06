@@ -56,31 +56,13 @@ public class JdbcTest {
   }
 
   @Test
-  void jdbcWithTxTest() {
+  void repositoryTest(){
     UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUserJdbcWithTx(
-        new UserJson(
-            null,
-            "Petya-Test",
-            null,
-            null,
-            null,
-            CurrencyValues.RUB,
-            null,
-            null,
-            null
-        )
-    );
-    System.out.println(user);
-  }
 
-  @Test
-  void jdbcWithoutTxTest() {
-    UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUserJdbcWithoutTx(
+    UserJson user = usersDbClient.createUser(
         new UserJson(
             null,
-            "Petya-Test",
+            "myself",
             null,
             null,
             null,
@@ -90,15 +72,12 @@ public class JdbcTest {
             null
         )
     );
-    System.out.println(user);
-  }
-  @Test
-  void SpringJdbcWithTxTest() {
-    UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUserJdbcSpringWithTx(
+
+
+    UserJson friend = usersDbClient.createUser(
         new UserJson(
             null,
-            "Petya-Test",
+            "friend1",
             null,
             null,
             null,
@@ -108,15 +87,12 @@ public class JdbcTest {
             null
         )
     );
-    System.out.println(user);
-  }
-  @Test
-  void SpringJdbcWithoutTxTest() {
-    UsersDbClient usersDbClient = new UsersDbClient();
-    UserJson user = usersDbClient.createUserJdbcSpringWithoutTx(
+
+
+    UserJson income = usersDbClient.createUser(
         new UserJson(
             null,
-            "Petya-Test",
+            "income",
             null,
             null,
             null,
@@ -126,6 +102,23 @@ public class JdbcTest {
             null
         )
     );
-    System.out.println(user);
+
+    UserJson outcome = usersDbClient.createUser(
+        new UserJson(
+            null,
+            "outcome",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+
+    usersDbClient.addIncomeInvitation(user, income);
+    usersDbClient.addOutcomeInvitation(user, outcome);
+    usersDbClient.addFriend(user, friend);
   }
 }

@@ -1,14 +1,14 @@
 package guru.qa.niffler.service;
 
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.data.dao.UdUserDao;
-import guru.qa.niffler.data.dao.impl.UdUserDaoSpringJdbc;
 import guru.qa.niffler.data.entity.auth.AuthUserEntity;
 import guru.qa.niffler.data.entity.auth.Authority;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
 import guru.qa.niffler.data.repository.AuthUserRepository;
+import guru.qa.niffler.data.repository.UserDataRepository;
 import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
+import guru.qa.niffler.data.repository.impl.UserDataRepositoryJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.UserJson;
@@ -27,8 +27,8 @@ public class UsersDbClient {
   private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
   private final AuthUserRepository authUserRepository = new AuthUserRepositoryJdbc();
-  private final UdUserDao udUserDao = new UdUserDaoSpringJdbc();
-
+  //private final UdUserDao udUserDao = new UdUserDaoSpringJdbc();
+    private final UserDataRepository udUserDao = new UserDataRepositoryJdbc();
 
     private final TransactionTemplate txTemplate = new TransactionTemplate(
         new ChainedTransactionManager(
@@ -73,4 +73,25 @@ public class UsersDbClient {
         }
     );
   }
+
+  public void addFriend(UserJson requester, UserJson addressee){
+      xaTransactionTemplate.execute(() ->{
+          udUserDao.addFriend(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
+          return null;
+      });
+  }
+
+  public  void addIncomeInvitation(UserJson requester, UserJson addressee){
+      xaTransactionTemplate.execute(() ->{
+          udUserDao.addIncomeInvitation(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
+          return null;
+      });
+  }
+
+    public  void addOutcomeInvitation(UserJson requester, UserJson addressee){
+        xaTransactionTemplate.execute(() ->{
+            udUserDao.addOutcomeInvitation(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
+            return null;
+        });
+    }
 }
