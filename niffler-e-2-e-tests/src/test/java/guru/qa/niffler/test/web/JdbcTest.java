@@ -55,4 +55,71 @@ public class JdbcTest {
     usersDbClient.addIncomeInvitation(user, 1);
     usersDbClient.addOutcomeInvitation(user, 1);
   }
+
+  @Test
+  void repositoryTest(){
+    UsersDbClient usersDbClient = new UsersDbClient();
+
+    UserJson user = usersDbClient.createUser(
+        new UserJson(
+            null,
+            "myself",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+
+
+    UserJson friend = usersDbClient.createUser(
+        new UserJson(
+            null,
+            "friend1",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+
+
+    UserJson income = usersDbClient.createUser(
+        new UserJson(
+            null,
+            "income",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+
+    UserJson outcome = usersDbClient.createUser(
+        new UserJson(
+            null,
+            "outcome",
+            null,
+            null,
+            null,
+            CurrencyValues.RUB,
+            null,
+            null,
+            null
+        )
+    );
+
+    usersDbClient.addIncomeInvitation(user, income);
+    usersDbClient.addOutcomeInvitation(user, outcome);
+    usersDbClient.addFriend(user, friend);
+  }
 }

@@ -3,23 +3,21 @@ package guru.qa.niffler.data.dao.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.dao.AuthAuthorityDao;
 import guru.qa.niffler.data.entity.auth.AuthorityEntity;
-import guru.qa.niffler.data.mapper.AuthorityEntityRowMapper;
 import guru.qa.niffler.data.tpl.DataSources;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
+
 
 public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
 
   private static final Config CFG = Config.getInstance();
-  private final String url = CFG.authJdbcUrl();
 
   @Override
   public void create(AuthorityEntity... authority) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
     jdbcTemplate.batchUpdate(
         "INSERT INTO authority (user_id, authority) VALUES (? , ?)",
         new BatchPreparedStatementSetter() {
@@ -36,13 +34,9 @@ public class AuthAuthorityDaoSpringJdbc implements AuthAuthorityDao {
         }
     );
   }
-
-  @Override
-  public List<AuthorityEntity> findAll() {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
-    return jdbcTemplate.query(
-        "SELECT * FROM \"authority\"",
-        AuthorityEntityRowMapper.instance
-    );
-  }
+    @Override
+    public void delete(AuthorityEntity authority) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        jdbcTemplate.update("DELETE FROM authority WHERE id = ?", authority.getId());
+    }
 }
