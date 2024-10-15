@@ -9,13 +9,11 @@ import guru.qa.niffler.data.repository.AuthUserRepository;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
-import guru.qa.niffler.data.repository.UserDataRepository;
-import guru.qa.niffler.data.repository.impl.AuthUserRepositoryJdbc;
-import guru.qa.niffler.data.repository.impl.UserDataRepositoryJdbc;
 import guru.qa.niffler.data.tpl.DataSources;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
@@ -23,8 +21,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.Arrays;
-
-import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
 
 
 public class UsersDbClient {
@@ -71,7 +67,7 @@ public class UsersDbClient {
 
       for (int i = 0; i < count; i++) {
         xaTransactionTemplate.execute(() -> {
-              String username = randomUsername();
+              String username = RandomDataUtils.randomName();
               AuthUserEntity authUser = authUserEntity(username, "12345");
               authUserRepository.create(authUser);
               UserEntity adressee = userdataUserRepository.create(userEntity(username));
@@ -91,7 +87,7 @@ public class UsersDbClient {
 
       for (int i = 0; i < count; i++) {
         xaTransactionTemplate.execute(() -> {
-              String username = randomUsername();
+              String username = RandomDataUtils.randomName();
               AuthUserEntity authUser = authUserEntity(username, "12345");
               authUserRepository.create(authUser);
               UserEntity adressee = userdataUserRepository.create(userEntity(username));
@@ -137,21 +133,21 @@ public class UsersDbClient {
 
   public void addFriendJdbc(UserJson requester, UserJson addressee){
       xaTransactionTemplate.execute(() ->{
-          udUserDao.addFriend(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
+          userdataUserRepository.addFriend(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
           return null;
       });
   }
 
   public  void addIncomeInvitationJdbc(UserJson requester, UserJson addressee){
       xaTransactionTemplate.execute(() ->{
-          udUserDao.addIncomeInvitation(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
+          userdataUserRepository.addIncomeInvitation(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
           return null;
       });
   }
 
     public  void addOutcomeInvitationJdbc(UserJson requester, UserJson addressee){
         xaTransactionTemplate.execute(() ->{
-            udUserDao.addOutcomeInvitation(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
+            userdataUserRepository.addOutcomeInvitation(UserEntity.fromJson(requester), UserEntity.fromJson(addressee));
             return null;
         });
     }
