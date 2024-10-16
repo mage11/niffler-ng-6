@@ -23,13 +23,13 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.Arrays;
 
 
-public class UsersDbClient {
+public class UsersDbClient implements UsersClient {
 
-  private static final Config CFG = Config.getInstance();
-  private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    private static final Config CFG = Config.getInstance();
+    private static final PasswordEncoder pe = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-  private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
-  private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
+    private final AuthUserRepository authUserRepository = new AuthUserRepositoryHibernate();
+    private final UserdataUserRepository userdataUserRepository = new UserdataUserRepositoryHibernate();
 
     private final TransactionTemplate txTemplate = new TransactionTemplate(
         new ChainedTransactionManager(
@@ -47,61 +47,89 @@ public class UsersDbClient {
         CFG.userdataJdbcUrl()
     );
 
-  public UserJson createUser(String username, String password) {
-    return xaTransactionTemplate.execute(() -> {
-          AuthUserEntity authUser = authUserEntity(username, password);
-          authUserRepository.create(authUser);
-          return UserJson.fromEntity(
-              userdataUserRepository.create(userEntity(username)),
-              null
-          );
+    public UserJson createUser(String username, String password) {
+        return xaTransactionTemplate.execute(() -> {
+                AuthUserEntity authUser = authUserEntity(username, password);
+                authUserRepository.create(authUser);
+                return UserJson.fromEntity(
+                    userdataUserRepository.create(userEntity(username)),
+                    null
+                );
+            }
+        );
+    }
+
+    @Override
+    public void addIncomeInvitation(UserJson targetUser, int count) {
+        if (count > 0) {
+            UserEntity targetEntity = userdataUserRepository.findById(
+                targetUser.id()
+            ).orElseThrow();
+
+            for (int i = 0; i < count; i++) {
+                xaTransactionTemplate.execute(() -> {
+                        String username = RandomDataUtils.randomName();
+                        AuthUserEntity authUser = authUserEntity(username, "12345");
+                        authUserRepository.create(authUser);
+                        UserEntity adressee = userdataUserRepository.create(userEntity(username));
+                        userdataUserRepository.addIncomeInvitation(targetEntity, adressee);
+                        return null;
+                    }
+                );
+            }
         }
-    );
-  }
+    }
 
-  public void addIncomeInvitation(UserJson targetUser, int count) {
-    if (count > 0) {
-      UserEntity targetEntity = userdataUserRepository.findById(
-          targetUser.id()
-      ).orElseThrow();
+    @Override
+    public void addOutcomeInvitation(UserJson targetUser, int count) {
+        if (count > 0) {
+            UserEntity targetEntity = userdataUserRepository.findById(
+                targetUser.id()
+            ).orElseThrow();
 
-      for (int i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++) {
+                xaTransactionTemplate.execute(() -> {
+                        String username = RandomDataUtils.randomName();
+                        AuthUserEntity authUser = authUserEntity(username, "12345");
+                        authUserRepository.create(authUser);
+                        UserEntity adressee = userdataUserRepository.create(userEntity(username));
+                        userdataUserRepository.addOutcomeInvitation(targetEntity, adressee);
+                        return null;
+                    }
+                );
+            }
+        }
+    }
+
+    @Override
+    public void addFriend(UserJson required, UserJson addressee) {
         xaTransactionTemplate.execute(() -> {
-              String username = RandomDataUtils.randomName();
-              AuthUserEntity authUser = authUserEntity(username, "12345");
-              authUserRepository.create(authUser);
-              UserEntity adressee = userdataUserRepository.create(userEntity(username));
-              userdataUserRepository.addIncomeInvitation(targetEntity, adressee);
-              return null;
+                userdataUserRepository.addFriend(UserEntity.fromJson(required), UserEntity.fromJson(addressee));
+                return null;
             }
         );
-      }
     }
-  }
 
-  public void addOutcomeInvitation(UserJson targetUser, int count) {
-    if (count > 0) {
-      UserEntity targetEntity = userdataUserRepository.findById(
-          targetUser.id()
-      ).orElseThrow();
+    @Override
+    public void addFriend(UserJson targetUser, int count) {
+        if (count > 0) {
+            UserEntity targetEntity = userdataUserRepository.findById(
+                targetUser.id()
+            ).orElseThrow();
 
-      for (int i = 0; i < count; i++) {
-        xaTransactionTemplate.execute(() -> {
-              String username = RandomDataUtils.randomName();
-              AuthUserEntity authUser = authUserEntity(username, "12345");
-              authUserRepository.create(authUser);
-              UserEntity adressee = userdataUserRepository.create(userEntity(username));
-              userdataUserRepository.addOutcomeInvitation(targetEntity, adressee);
-              return null;
+            for (int i = 0; i < count; i++) {
+                xaTransactionTemplate.execute(() -> {
+                        String username = RandomDataUtils.randomName();
+                        AuthUserEntity authUser = authUserEntity(username, "12345");
+                        authUserRepository.create(authUser);
+                        UserEntity addressee = userdataUserRepository.create(userEntity(username));
+                        userdataUserRepository.addFriend(targetEntity, addressee);
+                        return null;
+                    }
+                );
             }
-        );
-      }
+        }
     }
-  }
-
-  void addFriend(UserJson targetUser, int count) {
-
-  }
 
   private UserEntity userEntity(String username) {
     UserEntity ue = new UserEntity();

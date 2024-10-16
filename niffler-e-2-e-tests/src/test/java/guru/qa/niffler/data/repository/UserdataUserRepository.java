@@ -18,4 +18,6 @@ public interface UserdataUserRepository {
   void addOutcomeInvitation(UserEntity requester, UserEntity addressee);
 
   void addFriend(UserEntity requester, UserEntity addressee);
+  UserEntity update(UserEntity user);
+  void remove(UserEntity user);
 }
