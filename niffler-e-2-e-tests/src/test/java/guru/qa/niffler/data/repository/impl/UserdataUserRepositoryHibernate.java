@@ -63,4 +63,16 @@ public class UserdataUserRepositoryHibernate implements UserdataUserRepository {
     requester.addFriends(FriendshipStatus.ACCEPTED, addressee);
     addressee.addFriends(FriendshipStatus.ACCEPTED, requester);
   }
+
+  @Override
+  public UserEntity update(UserEntity user) {
+    entityManager.joinTransaction();
+    return entityManager.merge(user);
+  }
+
+  @Override
+  public void remove(UserEntity user) {
+    entityManager.joinTransaction();
+    entityManager.remove(user);
+  }
 }

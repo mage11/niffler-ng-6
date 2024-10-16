@@ -1,6 +1,5 @@
 package guru.qa.niffler.jupiter.extension;
 
-import guru.qa.niffler.data.entity.spend.CategoryEntity;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
@@ -46,7 +45,7 @@ public class CategoryExtension implements BeforeEachCallback, AfterTestExecution
         CategoryJson category = context.getStore(NAMESPACE).get(context.getUniqueId(), CategoryJson.class);
         if (category == null) return;
 
-        spendDbClient.deleteCategory(CategoryEntity.fromJson(category));
+        spendDbClient.deleteCategory(category);
     }
 
     @Override
