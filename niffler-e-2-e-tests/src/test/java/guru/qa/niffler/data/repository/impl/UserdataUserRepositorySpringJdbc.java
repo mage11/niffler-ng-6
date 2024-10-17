@@ -3,9 +3,11 @@ package guru.qa.niffler.data.repository.impl;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.data.entity.userdata.FriendshipStatus;
 import guru.qa.niffler.data.entity.userdata.UserEntity;
-import guru.qa.niffler.data.mapper.UdUserEntityRowMapper;
+import guru.qa.niffler.data.jdbc.DataSources;
+
+import guru.qa.niffler.data.mapper.UserdataUserEntityRowMapper;
 import guru.qa.niffler.data.repository.UserdataUserRepository;
-import guru.qa.niffler.data.tpl.DataSources;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -50,7 +52,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
         return Optional.ofNullable(
             jdbcTemplate.queryForObject(
                 "SELECT * FROM \"user\" WHERE id = ?",
-                UdUserEntityRowMapper.instance,
+                UserdataUserEntityRowMapper.instance,
                 id
             )
         );
@@ -61,7 +63,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
         return Optional.ofNullable(
             jdbcTemplate.queryForObject(
                 "SELECT * FROM \"user\" WHERE username = ?",
-                UdUserEntityRowMapper.instance,
+                UserdataUserEntityRowMapper.instance,
                 username
             )
         );
@@ -71,7 +73,7 @@ public class UserdataUserRepositorySpringJdbc implements UserdataUserRepository 
     public void addIncomeInvitation(UserEntity requester, UserEntity addressee) {
         jdbcTemplate.update(
             "INSERT INTO \"friendship\" (requester_id, addressee_id, status) " +
-            "VALUES (?,?,?)",
+                "VALUES (?,?,?)",
             requester.getId(),
             addressee.getId(),
             FriendshipStatus.PENDING.toString());

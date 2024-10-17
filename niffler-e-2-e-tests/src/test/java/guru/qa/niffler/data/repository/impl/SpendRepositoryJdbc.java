@@ -13,7 +13,8 @@ import java.sql.Statement;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
+
 
 public class SpendRepositoryJdbc implements SpendRepository {
 
@@ -39,13 +40,15 @@ public class SpendRepositoryJdbc implements SpendRepository {
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     generatedKey = rs.getObject("id", UUID.class);
-                } else {
+                }
+                else {
                     throw new SQLException("Can`t find id in ResultSet");
                 }
             }
             spend.setId(generatedKey);
             return spend;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -67,7 +70,8 @@ public class SpendRepositoryJdbc implements SpendRepository {
             ps.executeUpdate();
 
             return spend;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -89,13 +93,15 @@ public class SpendRepositoryJdbc implements SpendRepository {
             try (ResultSet rs = ps.getGeneratedKeys()) {
                 if (rs.next()) {
                     generatedKey = rs.getObject("id", UUID.class);
-                } else {
+                }
+                else {
                     throw new SQLException("Can`t find id in ResultSet");
                 }
             }
             category.setId(generatedKey);
             return category;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -115,7 +121,8 @@ public class SpendRepositoryJdbc implements SpendRepository {
             ps.executeUpdate();
 
             return category;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -135,11 +142,13 @@ public class SpendRepositoryJdbc implements SpendRepository {
                     ce.setName(rs.getString("name"));
                     ce.setArchived(rs.getBoolean("archived"));
                     return Optional.of(ce);
-                } else {
+                }
+                else {
                     return Optional.empty();
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -162,11 +171,13 @@ public class SpendRepositoryJdbc implements SpendRepository {
                     categoryEntity.setName(rs.getString("name"));
                     categoryEntity.setArchived(rs.getBoolean("archived"));
                     categoryEntities = Optional.of(categoryEntity);
-                } else {
+                }
+                else {
                     return Optional.empty();
                 }
             }
-        }  catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -180,11 +191,11 @@ public class SpendRepositoryJdbc implements SpendRepository {
             "SELECT * " +
                 "FROM spend " +
                 "WHERE id = ?;"
-        )){
+        )) {
             ps.setObject(1, id);
             ps.execute();
 
-            try(ResultSet rs = ps.getResultSet()){
+            try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
                     SpendEntity spendEntity = new SpendEntity();
                     spendEntity.setId(rs.getObject("id", UUID.class));
@@ -196,11 +207,13 @@ public class SpendRepositoryJdbc implements SpendRepository {
                     spendEntity.setCategory(rs.getObject("category_id", CategoryEntity.class));
 
                     spendEntities = Optional.of(spendEntity);
-                } else {
+                }
+                else {
                     return Optional.empty();
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -215,12 +228,12 @@ public class SpendRepositoryJdbc implements SpendRepository {
                 "FROM spend " +
                 "WHERE username = ?" +
                 "AND description = ?;"
-        )){
+        )) {
             ps.setString(1, username);
             ps.setString(1, description);
             ps.execute();
 
-            try(ResultSet rs = ps.getResultSet()){
+            try (ResultSet rs = ps.getResultSet()) {
                 if (rs.next()) {
                     SpendEntity spendEntity = new SpendEntity();
                     spendEntity.setId(rs.getObject("id", UUID.class));
@@ -232,11 +245,13 @@ public class SpendRepositoryJdbc implements SpendRepository {
                     spendEntity.setCategory(rs.getObject("category_id", CategoryEntity.class));
 
                     spendEntities = Optional.of(spendEntity);
-                } else {
+                }
+                else {
                     return Optional.empty();
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
@@ -249,10 +264,11 @@ public class SpendRepositoryJdbc implements SpendRepository {
             "DELETE " +
                 "FROM spend " +
                 "WHERE id = ?"
-        )){
+        )) {
             ps.setObject(1, spend.getId());
             ps.execute();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -266,7 +282,8 @@ public class SpendRepositoryJdbc implements SpendRepository {
         )) {
             ps.setObject(1, category.getId());
             ps.execute();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }

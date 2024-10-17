@@ -16,40 +16,42 @@ public class UserDaoJdbc implements UserDao {
 
     private final Connection connection;
 
-    public UserDaoJdbc(Connection connection){
+    public UserDaoJdbc(Connection connection) {
         this.connection = connection;
     }
 
     @Override
     public UserEntity createUser(UserEntity user) {
-            try (PreparedStatement ps = connection.prepareStatement(
-                "INSERT INTO user (username, firstname, surname, full_name, currency, photo, photo_small) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                Statement.RETURN_GENERATED_KEYS
-            )) {
-                ps.setString(1, user.getUsername());
-                ps.setString(2, user.getFirstname());
-                ps.setString(2, user.getSurname());
-                ps.setString(2, user.getFullname());
-                ps.setString(3, user.getCurrency().name());
-                ps.setBytes(4, user.getPhoto());
-                ps.setBytes(5, user.getPhotoSmall());
+        try (PreparedStatement ps = connection.prepareStatement(
+            "INSERT INTO user (username, firstname, surname, full_name, currency, photo, photo_small) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)",
+            Statement.RETURN_GENERATED_KEYS
+        )) {
+            ps.setString(1, user.getUsername());
+            ps.setString(2, user.getFirstname());
+            ps.setString(2, user.getSurname());
+            ps.setString(2, user.getFullname());
+            ps.setString(3, user.getCurrency().name());
+            ps.setBytes(4, user.getPhoto());
+            ps.setBytes(5, user.getPhotoSmall());
 
-                ps.executeUpdate();
+            ps.executeUpdate();
 
-                final UUID generatedKey;
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        generatedKey = rs.getObject("id", UUID.class);
-                    } else {
-                        throw new SQLException("Can`t find id in ResultSet");
-                    }
+            final UUID generatedKey;
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    generatedKey = rs.getObject("id", UUID.class);
                 }
-                user.setId(generatedKey);
-                return user;
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
+                else {
+                    throw new SQLException("Can`t find id in ResultSet");
+                }
             }
+            user.setId(generatedKey);
+            return user;
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

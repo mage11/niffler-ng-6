@@ -52,7 +52,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
 
     @Override
     public Optional<CategoryEntity> findCategoryByUsernameAndSpendName(String username, String name) {
-        try{
+        try {
             return Optional.ofNullable(
                 entityManager.createQuery(
                         "select c from CategoryEntity c where c.username =: username and c.name =: name", CategoryEntity.class)
@@ -60,7 +60,8 @@ public class SpendRepositoryHibernate implements SpendRepository {
                     .setParameter("name", name)
                     .getSingleResult()
             );
-        } catch (NoResultException e) {
+        }
+        catch (NoResultException e) {
             return Optional.empty();
         }
     }
@@ -74,7 +75,7 @@ public class SpendRepositoryHibernate implements SpendRepository {
 
     @Override
     public Optional<SpendEntity> findByUsernameAndSpendDescription(String username, String description) {
-        try{
+        try {
             return Optional.ofNullable(
                 entityManager.createQuery(
                         "select s from SpendEntity s where s.username =: username and s.description =: description", SpendEntity.class)
@@ -82,7 +83,8 @@ public class SpendRepositoryHibernate implements SpendRepository {
                     .setParameter("description", description)
                     .getSingleResult()
             );
-        } catch (NoResultException e) {
+        }
+        catch (NoResultException e) {
             return Optional.empty();
         }
     }

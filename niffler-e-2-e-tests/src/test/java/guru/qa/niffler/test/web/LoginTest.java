@@ -10,8 +10,6 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
-
 @WebTest
 public class LoginTest {
 
@@ -33,8 +31,8 @@ public class LoginTest {
   @Test
   void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin(user.username(), user.testData().password())
-        .checkThatPageLoaded();
+        .login(user.username(), user.testData().password())
+        .headersBlocksShouldBeExists();
   }
 
     @Test

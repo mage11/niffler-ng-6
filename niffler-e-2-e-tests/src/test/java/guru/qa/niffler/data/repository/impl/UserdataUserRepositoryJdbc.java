@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.data.tpl.Connections.holder;
+import static guru.qa.niffler.data.jdbc.Connections.holder;
 
 public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
 
@@ -68,11 +68,13 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
                     user.setPhoto(rs.getBytes("photo"));
                     user.setPhotoSmall(rs.getBytes("photo_small"));
                     return Optional.of(user);
-                } else {
+                }
+                else {
                     return Optional.empty();
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -95,11 +97,13 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
                     user.setPhoto(rs.getBytes("photo"));
                     user.setPhotoSmall(rs.getBytes("photo_small"));
                     return Optional.of(user);
-                } else {
+                }
+                else {
                     return Optional.empty();
                 }
             }
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -143,7 +147,8 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
             ps.setObject(7, user.getId());
             ps.executeUpdate();
             return user;
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
@@ -154,7 +159,8 @@ public class UserdataUserRepositoryJdbc implements UserdataUserRepository {
             "DELETE FROM \"user\" WHERE id = ?")) {
             ps.setObject(1, user.getId());
             ps.executeUpdate();
-        } catch (SQLException e) {
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
