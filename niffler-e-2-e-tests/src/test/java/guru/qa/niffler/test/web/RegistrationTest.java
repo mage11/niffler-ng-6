@@ -2,50 +2,92 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
-import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.page.LoginPage;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
-
-@WebTest
 public class RegistrationTest {
 
-  private static final Config CFG = Config.getInstance();
+    private static final Config CFG = Config.getInstance();
+    private final String messageOfSuccessRegistration = "Congratulations! You've registered!";
 
-  @Test
-  void shouldRegisterNewUser() {
-    String newUsername = randomUsername();
-    String password = "12345";
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .doRegister()
-        .fillRegisterPage(newUsername, password, password)
-        .successSubmit()
-        .successLogin(newUsername, password)
-        .checkThatPageLoaded();
-  }
+    @Test
+    public void shouldRegisterNewUser(){
 
-  @Test
-  void shouldNotRegisterUserWithExistingUsername() {
-    String existingUsername = "duck";
-    String password = "12345";
+        String username = getRandomString();
+        String password = getRandomString();
 
-    LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
-    loginPage.doRegister()
-        .fillRegisterPage(existingUsername, password, password)
-        .submit();
-    loginPage.checkError("Username `" + existingUsername + "` already exists");
-  }
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .clickToCreateNewAccountButton()
+            .setUserName(username)
+            .setPassword(password)
+            .setPasswordSubmit(password)
+            .submitRegistration()
+            .shouldBeSuccessRegistration(messageOfSuccessRegistration);
 
-  @Test
-  void shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual() {
-    String newUsername = randomUsername();
-    String password = "12345";
+    }
 
-    LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
-    loginPage.doRegister()
-        .fillRegisterPage(newUsername, password, "bad password submit")
-        .submit();
-    loginPage.checkError("Passwords should be equal");
-  }
+    @Test
+    public void shouldNotRegisterUserWithExistingUserName(){
+
+        String username = getRandomString();
+        String password = getRandomString();
+        String errorMessage = "Username `" + username + "` already exists";
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .clickToCreateNewAccountButton()
+            .setUserName(username)
+            .setPassword(password)
+            .setPasswordSubmit(password)
+            .submitRegistration()
+            .shouldBeSuccessRegistration(messageOfSuccessRegistration)
+            .clickToSignInButton()
+            .clickToCreateNewAccountButton()
+            .setUserName(username)
+            .setPassword(password)
+            .setPasswordSubmit(password)
+            .submitRegistration()
+            .shouldBeErrorMessage(errorMessage);
+    }
+
+    @Test
+    public void  shouldShowErrorIfPasswordAndConfirmPasswordAreNotEqual(){
+
+        String username = getRandomString();
+        String password = getRandomString();
+        String passwordNotEqual = "Passwords should be equal";
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .clickToCreateNewAccountButton()
+            .setUserName(username)
+            .setPassword(password)
+            .setPasswordSubmit(username)
+            .submitRegistration()
+            .shouldBeErrorMessage(passwordNotEqual);
+
+    }
+
+    @Test
+    public void  shouldShowErrorIfPasswordNotEnoughLength(){
+
+        String username = getRandomString();
+        String password = "1";
+        String passwordErrorLength = "Allowed password length should be from 3 to 12 characters";
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .clickToCreateNewAccountButton()
+            .setUserName(username)
+            .setPassword(password)
+            .setPasswordSubmit(username)
+            .submitRegistration()
+            .shouldBeErrorMessage(passwordErrorLength);
+
+    }
+
+    public String getRandomString(){
+
+        return RandomStringUtils.random(5, true, true);
+    }
+
+
 }

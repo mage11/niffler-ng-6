@@ -24,6 +24,42 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
   }
 
   @Override
+  public AuthUserEntity update(AuthUserEntity user) {
+    try (PreparedStatement userPs = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+        "UPDATE \"user\" SET password = ?, enabled = ?, " +
+            "account_non_expired = ?, account_non_locked = ?, credentials_non_expired = ? " +
+            "WHERE id = ?");
+         PreparedStatement authorityDeletePs = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+             "DELETE FROM \"authority\" WHERE user_id = ?");
+         PreparedStatement authorityInsertPs = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+             "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
+      authorityDeletePs.setObject(1, user.getId());
+      authorityDeletePs.executeUpdate();
+
+      for (AuthorityEntity a : user.getAuthorities()) {
+        authorityInsertPs.setObject(1, user.getId());
+        authorityInsertPs.setString(2, a.getAuthority().name());
+        authorityInsertPs.addBatch();
+        authorityInsertPs.clearParameters();
+      }
+      authorityInsertPs.executeBatch();
+
+      userPs.setString(1, user.getPassword());
+      userPs.setBoolean(2, user.getEnabled());
+      userPs.setBoolean(3, user.getAccountNonExpired());
+      userPs.setBoolean(4, user.getAccountNonLocked());
+      userPs.setBoolean(5, user.getCredentialsNonExpired());
+      userPs.setObject(6, user.getId());
+
+      userPs.executeUpdate();
+
+      return user;
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
   public Optional<AuthUserEntity> findById(UUID id) {
     Optional<AuthUserEntity> userEntity = authUserDao.findById(id);
     userEntity
@@ -44,5 +80,23 @@ public class AuthUserRepositoryJdbc implements AuthUserRepository {
         )
     );
     return userEntity;
+  }
+
+  @Override
+  public void remove(AuthUserEntity user) {
+    try (PreparedStatement userPs = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+        "DELETE FROM \"user\"" +
+            "WHERE id = ?");
+         PreparedStatement authorityDeletePs = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+             "DELETE FROM \"authority\" WHERE user_id = ?")) {
+      authorityDeletePs.setObject(1, user.getId());
+      authorityDeletePs.executeUpdate();
+
+      userPs.setObject(1, user.getId());
+      userPs.executeUpdate();
+
+    } catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

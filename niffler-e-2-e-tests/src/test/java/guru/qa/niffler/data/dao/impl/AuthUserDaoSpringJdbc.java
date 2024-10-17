@@ -27,10 +27,8 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
     KeyHolder kh = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
       PreparedStatement ps = con.prepareStatement(
-          """
-                 INSERT INTO "user" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) 
-                 VALUES (?,?,?,?,?,?)
-              """,
+          "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
+              "VALUES (?,?,?,?,?,?)",
           Statement.RETURN_GENERATED_KEYS
       );
       ps.setString(1, user.getUsername());
@@ -48,14 +46,18 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
   }
 
   @Override
+  public void deleteAuthUser(AuthUserEntity user) {
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+    jdbcTemplate.update("DELETE FROM \"user\" WHERE id = ?", user.getId());
+  }
+
+  @Override
   public Optional<AuthUserEntity> findById(UUID id) {
     JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
     try {
       return Optional.ofNullable(
         jdbcTemplate.queryForObject(
-            """
-                    SELECT * FROM "user" WHERE id = ?
-                """,
+            "SELECT * FROM \"user\" WHERE id = ?",
             AuthUserEntityRowMapper.instance,
             id
         )

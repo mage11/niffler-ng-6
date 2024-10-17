@@ -37,10 +37,16 @@ public class LoginTest {
         .checkThatPageLoaded();
   }
 
-  @Test
-  void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
-    LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
-    loginPage.login(randomUsername(), "BAD");
-    loginPage.checkError("Bad credentials");
-  }
+    @Test
+    public void userShouldStayOnLoginPageAfterLoginWithBadCredentials(){
+
+        String errorMessage = "Неверные учетные данные пользователя";
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .login("PetyaMain", "321");
+
+        LoginPage currentLoginPage = new LoginPage();
+        currentLoginPage.shouldBeErrorMessage(errorMessage);
+    }
+
 }

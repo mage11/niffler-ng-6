@@ -23,11 +23,8 @@ public class AuthUserDaoJdbc implements AuthUserDao {
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
     try (PreparedStatement ps = holder(url).connection().prepareStatement(
-        """
-                INSERT INTO "user" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) 
-                VALUES (?, ?, ?, ?, ?, ?)
-            """,
-        PreparedStatement.RETURN_GENERATED_KEYS)) {
+        "INSERT INTO \"user\" (username, password, enabled, account_non_expired, account_non_locked, credentials_non_expired) " +
+            "VALUES (?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, user.getUsername());
       ps.setString(2, user.getPassword());
       ps.setBoolean(3, user.getEnabled());
@@ -54,9 +51,7 @@ public class AuthUserDaoJdbc implements AuthUserDao {
 
   @Override
   public Optional<AuthUserEntity> findById(UUID id) {
-    try (PreparedStatement ps = holder(url).connection().prepareStatement("""
-                SELECT * FROM "user" WHERE id = ?
-        """)) {
+    try (PreparedStatement ps = holder(url).connection().prepareStatement("SELECT * FROM \"user\" WHERE id = ?")) {
       ps.setObject(1, id);
 
       ps.execute();
@@ -118,4 +113,15 @@ public class AuthUserDaoJdbc implements AuthUserDao {
       throw new RuntimeException(e);
     }
   }
+    @Override
+    public void deleteAuthUser(AuthUserEntity user) {
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+            "DELETE FROM user WHERE id = ?"
+        )) {
+            ps.setObject(1, user.getId());
+            ps.execute();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

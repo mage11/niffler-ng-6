@@ -12,6 +12,7 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,7 +24,7 @@ public class SpendDaoSpringJdbc implements SpendDao {
 
   @Override
   public SpendEntity create(SpendEntity spend) {
-    JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
+      JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
     KeyHolder kh = new GeneratedKeyHolder();
     jdbcTemplate.update(con -> {
       PreparedStatement ps = con.prepareStatement(
@@ -42,10 +43,10 @@ public class SpendDaoSpringJdbc implements SpendDao {
       return ps;
     }, kh);
 
-    final UUID generatedKey = (UUID) kh.getKeys().get("id");
-    spend.setId(generatedKey);
-    return spend;
-  }
+        final UUID generatedKey = (UUID) kh.getKeys().get("id");
+        spend.setId(generatedKey);
+        return spend;
+    }
 
   @Override
   public Optional<SpendEntity> findById(UUID id) {
@@ -63,6 +64,18 @@ public class SpendDaoSpringJdbc implements SpendDao {
       return Optional.empty();
     }
   }
+
+    @Override
+    public List<SpendEntity> findAllByUserName(String username) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
+        return Arrays.asList(
+            jdbcTemplate.queryForObject(
+                "SELECT * FROM spend WHERE username = ?",
+                SpendEntityRowMapper.instance,
+                username
+            )
+        );
+    }
 
   @Override
   public List<SpendEntity> findAll() {
@@ -94,4 +107,12 @@ public class SpendDaoSpringJdbc implements SpendDao {
     );
     return spend;
   }
+
+    @Override
+    public void deleteSpend(SpendEntity spend) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(url));
+        jdbcTemplate.update("DELETE FROM spend WHERE id = ?", spend.getId());
+    }
+
+
 }

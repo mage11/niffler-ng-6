@@ -22,6 +22,7 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
   private final String url = CFG.authJdbcUrl();
   private final AuthUserDao authUserDao = new AuthUserDaoSpringJdbc();
   private final AuthAuthorityDao authAuthorityDao = new AuthAuthorityDaoSpringJdbc();
+    private JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
 
   @Override
   public AuthUserEntity create(AuthUserEntity user) {
@@ -75,4 +76,41 @@ public class AuthUserRepositorySpringJdbc implements AuthUserRepository {
         )
     );
   }
+
+    @Override
+    public AuthUserEntity update(AuthUserEntity user) {
+        jdbcTemplate.update(
+            "DELETE FROM \"authority\" WHERE user_id = ?",
+            user.getId());
+        jdbcTemplate.update(
+            "UPDATE \"user\" SET username = ?, password = ?, account_non_expired = ?, account_non_locked = ?, " +
+                "credentials_non_expired = ? WHERE id = ?",
+            user.getUsername(),
+            user.getPassword(),
+            user.getAccountNonExpired(),
+            user.getAccountNonLocked(),
+            user.getCredentialsNonExpired(),
+            user.getId()
+        );
+        jdbcTemplate.batchUpdate(
+            "INSERT INTO \"authority\" (user_id, authority) VALUES (?, ?)",
+            user.getAuthorities(),
+            user.getAuthorities().size(),
+            ( ps,  authority) -> {
+                ps.setObject(1, user.getId());
+                ps.setString(2, authority.getAuthority().name());
+            });
+
+        return user;
+    }
+
+    @Override
+    public void remove(AuthUserEntity user) {
+        jdbcTemplate.update(
+            "DELETE FROM \"authority\" WHERE user_id = ?",
+            user.getId());
+        jdbcTemplate.update(
+            "DELETE FROM \"user\" WHERE id = ?",
+            user.getId());
+    }
 }
