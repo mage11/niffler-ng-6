@@ -4,6 +4,7 @@ import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.service.SpendApiClient;
 import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.SpendDbClient;
 import org.apache.commons.lang3.ArrayUtils;
@@ -25,7 +26,7 @@ public class CategoryExtension implements
 
     public static final ExtensionContext.Namespace NAMESPACE = ExtensionContext.Namespace.create(CategoryExtension.class);
 
-    private final SpendClient spendClient = new SpendDbClient();
+    private final SpendClient spendClient = new SpendApiClient();
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
