@@ -20,7 +20,10 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class UsersDbClient implements UsersClient {
@@ -47,7 +50,7 @@ public class UsersDbClient implements UsersClient {
         CFG.userdataJdbcUrl()
     );
 
-    public UserJson createUser(String username, String password) {
+    public UserJson createUser(@Nonnull String username,@Nonnull String password) {
         return xaTransactionTemplate.execute(() -> {
                 AuthUserEntity authUser = authUserEntity(username, password);
                 authUserRepository.create(authUser);
@@ -60,7 +63,8 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
-    public void addIncomeInvitation(UserJson targetUser, int count) {
+    public List<UserJson> addIncomeInvitation(@Nonnull UserJson targetUser, int count) {
+        List<UserJson> incomeUsers = new ArrayList<>();
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
                 targetUser.id()
@@ -73,15 +77,18 @@ public class UsersDbClient implements UsersClient {
                         authUserRepository.create(authUser);
                         UserEntity adressee = userdataUserRepository.create(userEntity(username));
                         userdataUserRepository.addIncomeInvitation(targetEntity, adressee);
+                        incomeUsers.add(UserJson.fromEntity(adressee, null));
                         return null;
                     }
                 );
             }
         }
+        return incomeUsers;
     }
 
     @Override
-    public void addOutcomeInvitation(UserJson targetUser, int count) {
+    public List<UserJson> addOutcomeInvitation(@Nonnull UserJson targetUser, int count) {
+        List<UserJson> outcomeUsers = new ArrayList<>();
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
                 targetUser.id()
@@ -94,15 +101,17 @@ public class UsersDbClient implements UsersClient {
                         authUserRepository.create(authUser);
                         UserEntity adressee = userdataUserRepository.create(userEntity(username));
                         userdataUserRepository.addOutcomeInvitation(targetEntity, adressee);
+                        outcomeUsers.add(UserJson.fromEntity(adressee, null));
                         return null;
                     }
                 );
             }
         }
+        return outcomeUsers;
     }
 
     @Override
-    public void addFriend(UserJson required, UserJson addressee) {
+    public void addFriend(@Nonnull UserJson required,@Nonnull UserJson addressee) {
         xaTransactionTemplate.execute(() -> {
                 userdataUserRepository.addFriend(UserEntity.fromJson(required), UserEntity.fromJson(addressee));
                 return null;
@@ -111,7 +120,8 @@ public class UsersDbClient implements UsersClient {
     }
 
     @Override
-    public void addFriend(UserJson targetUser, int count) {
+    public List<UserJson> addFriend(@Nonnull UserJson targetUser, int count) {
+        List<UserJson> friends = new ArrayList<>();
         if (count > 0) {
             UserEntity targetEntity = userdataUserRepository.findById(
                 targetUser.id()
@@ -124,21 +134,23 @@ public class UsersDbClient implements UsersClient {
                         authUserRepository.create(authUser);
                         UserEntity addressee = userdataUserRepository.create(userEntity(username));
                         userdataUserRepository.addFriend(targetEntity, addressee);
+                        friends.add(UserJson.fromEntity(addressee, null));
                         return null;
                     }
                 );
             }
         }
+        return friends;
     }
 
-  private UserEntity userEntity(String username) {
+  private UserEntity userEntity(@Nonnull String username) {
     UserEntity ue = new UserEntity();
     ue.setUsername(username);
     ue.setCurrency(CurrencyValues.RUB);
     return ue;
   }
 
-  private AuthUserEntity authUserEntity(String username, String password) {
+  private AuthUserEntity authUserEntity(@Nonnull String username,@Nonnull String password) {
     AuthUserEntity authUser = new AuthUserEntity();
     authUser.setUsername(username);
     authUser.setPassword(pe.encode(password));
