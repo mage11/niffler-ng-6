@@ -1,6 +1,7 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Step;
 import lombok.extern.java.Log;
 
 import static com.codeborne.selenide.Condition.text;
@@ -16,6 +17,7 @@ public class RegisterPage {
     private final SelenideElement signInButton = $(".form_sign-in");
     private final SelenideElement formError = $(".form__error");
 
+    @Step("Установить в поле username значение {userName}")
     public RegisterPage setUserName(String userName){
 
         usernameInput.setValue(userName);
@@ -23,6 +25,7 @@ public class RegisterPage {
         return this;
     }
 
+    @Step("Установить в поле password значение {password}")
     public RegisterPage setPassword(String password){
 
         passwordInput.setValue(password);
@@ -30,6 +33,7 @@ public class RegisterPage {
         return this;
     }
 
+    @Step("Установить в поле passwordSubmit значение {password}")
     public RegisterPage setPasswordSubmit(String password){
 
         passwordSubmitInput.setValue(password);
@@ -37,6 +41,7 @@ public class RegisterPage {
         return this;
     }
 
+    @Step("Подтвердить регистрацию по кнопке подтверждения")
     public RegisterPage submitRegistration(){
 
         submitButton.click();
@@ -44,6 +49,7 @@ public class RegisterPage {
         return this;
     }
 
+    @Step("Провереить успешность регистрации")
     public RegisterPage shouldBeSuccessRegistration(String message){
 
         messageOfSuccessRegistration.shouldHave(text(message));
@@ -51,6 +57,7 @@ public class RegisterPage {
         return this;
     }
 
+    @Step("Нажать на кнопку входа")
     public LoginPage clickToSignInButton(){
 
         signInButton.click();
@@ -58,6 +65,7 @@ public class RegisterPage {
         return  new LoginPage();
     }
 
+    @Step("Должна быть показана ошибка {message}")
     public RegisterPage shouldBeErrorMessage(String message){
 
         formError.shouldHave(text(message));

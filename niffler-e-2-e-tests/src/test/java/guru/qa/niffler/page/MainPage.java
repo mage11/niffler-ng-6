@@ -2,6 +2,7 @@ package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
+import guru.qa.niffler.page.component.Header;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Condition.exist;
@@ -11,12 +12,10 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class MainPage {
   private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
-  private final SelenideElement menuButton = $("button[aria-label='Menu']");
-  private final SelenideElement profileOption = $("a[href='/profile']");
-  private final SelenideElement friendsOption = $("a[href='/people/friends']");
   private final SelenideElement statisticBlock = $("#stat");
   private final SelenideElement spendingBlock = $("#spendings");
   private final SelenideElement searchInput = $(By.xpath("//input[@placeholder='Search']"));
+  private final Header header = new Header();
 
   public EditSpendingPage editSpending(String spendingDescription) {
     searchInput.setValue(spendingDescription).pressEnter();
@@ -30,18 +29,11 @@ public class MainPage {
   }
 
   public ProfilePage clickToProfile(){
-
-    menuButton.click();
-    profileOption.click();
-
-    return new ProfilePage();
+    return header.toProfilePage();
   }
 
   public FriendsPage clickToFriendsPage(){
-
-    menuButton.click();
-    friendsOption.click();
-    return new FriendsPage();
+    return header.toFriendsPage();
   }
 
   public MainPage headersBlocksShouldBeExists(){
@@ -53,5 +45,9 @@ public class MainPage {
     spendingBlock.shouldBe(exist).shouldHave(text(spendingHeader));
 
     return this;
+  }
+
+  public EditSpendingPage addNewSpending(){
+    return header.addNewSpendingPage();
   }
 }

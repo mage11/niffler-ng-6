@@ -2,10 +2,12 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.UserType;
 import guru.qa.niffler.jupiter.extension.UsersQueueExtension.StaticUser;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,5 +62,33 @@ public class FriendsWebTest {
             .foundUserInAllPeopleListShouldHaveOutcomeStatus(staticUser.outcome());
 
     }
+
+    @User(
+        incomeFriend = true
+    )
+    @Test
+    void acceptInviteFriend(UserJson user){
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .login(user.username(), user.testData().password())
+            .headersBlocksShouldBeExists()
+            .clickToFriendsPage()
+            .acceptInviteFromUser(user.testData().incomeFriends().get(0).username())
+            .foundFriendShouldBeExistInFriendList(user.testData().incomeFriends().get(0).username());
+    }
+
+    @User(
+        incomeFriend = true
+    )
+    @Test
+    void declineInviteFromUser(UserJson user){
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .login(user.username(), user.testData().password())
+            .headersBlocksShouldBeExists()
+            .clickToFriendsPage()
+            .declineInviteFromUser(user.testData().incomeFriends().get(0).username())
+            .friendListShouldBeEmpty();
+    }
+
+
 
 }

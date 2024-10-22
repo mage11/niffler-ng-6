@@ -6,7 +6,9 @@ import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.CategoryJson;
+import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -63,6 +65,15 @@ public class ProfileTest {
             .login("PetyaMain", "123")
             .clickToProfile()
             .searchingCategoryShouldNotBeExist(category.name());
+    }
+
+    @User()
+    @Test
+    void editName(UserJson user){
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .login(user.username(), user.testData().password())
+            .clickToProfile()
+            .setNameAndSave(RandomDataUtils.randomName());
     }
 
 }
