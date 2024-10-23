@@ -5,6 +5,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.github.javafaker.Friends;
 import guru.qa.niffler.page.component.SearchField;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.Condition.exactText;
@@ -29,12 +30,14 @@ public class FriendsPage {
             .$(By.xpath("*//button[text()='Decline']"));
     private final SearchField searchField = new SearchField();
 
+    @Step("Проверить существование влкадки друзей")
     public FriendsPage panelFriendsShouldBeExist(){
 
         panelFriends.shouldBe(exist);
         return this;
     }
 
+    @Step("Проверить присутствие друга в списке друзей {friendName}")
     public FriendsPage foundFriendShouldBeExistInFriendList(String friendName){
 
         String buttonName = "Unfriend";
@@ -46,6 +49,7 @@ public class FriendsPage {
         return this;
     }
 
+    @Step("Список друзей должен быть пуст")
     public FriendsPage friendListShouldBeEmpty(){
 
         String defaultTitleWhenFriendListIsEmpty = "There are no users yet";
@@ -53,6 +57,7 @@ public class FriendsPage {
         return this;
     }
 
+    @Step("Должна быть заявка от {userName}")
     public FriendsPage foundUserShouldBeExistInRequestList(String userName){
 
         String buttonAcceptText = "Accept";
@@ -64,6 +69,7 @@ public class FriendsPage {
         return this;
     }
 
+    @Step("Принять заявку от {username}")
     public FriendsPage acceptInviteFromUser(String username){
         searchField.search(username);
         requestsList.find(text(username))
@@ -72,22 +78,24 @@ public class FriendsPage {
         return this;
     }
 
+    @Step("Отклонить заявку от {username}")
     public FriendsPage declineInviteFromUser(String username){
         searchField.search(username);
         requestsList.find(text(username))
             .shouldBe(visible)
             .$(By.xpath("*//button[text()='Decline']")).click();
-        declineButtonInContainer.shouldBe(exist);
         declineButtonInContainer.click();
         return this;
     }
 
+    @Step("Открыть влкадку People")
     public FriendsPage clickToAllPeopleButton(){
 
         allPeopleButton.click();
         return this;
     }
 
+    @Step("Найти исходящию заявку по юзеру {userName}")
     public FriendsPage foundUserInAllPeopleListShouldHaveOutcomeStatus(String userName){
 
         String outcomeStatusText = "Waiting...";

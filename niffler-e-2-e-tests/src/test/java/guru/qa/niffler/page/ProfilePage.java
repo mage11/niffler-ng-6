@@ -7,8 +7,8 @@ import guru.qa.niffler.page.component.SearchField;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
-import static com.codeborne.selenide.Condition.attribute;
 import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
@@ -45,12 +45,13 @@ public class ProfilePage {
         return this;
     }
 
+    @Step("Установить для поля name значение {name}")
     public ProfilePage setNameAndSave(String name){
         nameInput.sendKeys(CONTROL + "a");
         nameInput.sendKeys(BACK_SPACE);
         nameInput.setValue(name);
         saveChangesButton.click();
-        nameInput.shouldHave(attribute("value", name));
+        nameInput.shouldHave(value(name));
         return this;
     }
 }
