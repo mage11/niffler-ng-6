@@ -21,10 +21,10 @@ public interface SpendRepository {
     CategoryEntity createCategory(CategoryEntity category);
 
     @Nonnull
-    Optional<CategoryEntity> findCategoryById(UUID id);
+    CategoryEntity updateCategory(CategoryEntity category);
 
     @Nonnull
-    Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name);
+    Optional<CategoryEntity> findCategoryById(UUID id);
 
     @Nonnull
     Optional<SpendEntity> findById(UUID id);

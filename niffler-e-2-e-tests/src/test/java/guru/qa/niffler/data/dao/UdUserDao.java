@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @ParametersAreNonnullByDefault
-public interface UserdataUserDao {
+public interface UdUserDao {
 
     @Nonnull
     UserEntity create(UserEntity user);

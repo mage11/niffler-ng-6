@@ -1,6 +1,5 @@
 package guru.qa.niffler.service;
 
-import guru.qa.niffler.api.CategoriesApi;
 import guru.qa.niffler.api.SpendApi;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.model.CategoryJson;
@@ -11,7 +10,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +23,6 @@ public class SpendApiClient implements SpendClient{
         .addConverterFactory(JacksonConverterFactory.create())
         .build();
     private final SpendApi spendApi = retrofit.create(SpendApi.class);
-    private final CategoriesApi categoriesApi = retrofit.create(CategoriesApi.class);
 
     @Override
     public SpendJson createSpend(SpendJson spend) {
@@ -59,10 +56,10 @@ public class SpendApiClient implements SpendClient{
         throw new UnsupportedOperationException("Нужно использовать метод getSpend(String id, String username)");
     }
 
-    public SpendJson getSpend(String id, String username){
+    public SpendJson getSpend(String id){
         final Response<SpendJson> response;
         try {
-            response = spendApi.getSpend(id, username)
+            response = spendApi.getSpend(id)
                 .execute();
         } catch (IOException e){
             throw new AssertionError(e);
@@ -77,10 +74,10 @@ public class SpendApiClient implements SpendClient{
         throw new UnsupportedOperationException("Не поддерживается. Нужно использовать getSpends(String username, CurrencyValues filterCurrency, Date from, Date to)");
     }
 
-    public List<SpendJson> getSpends(String username, CurrencyValues filterCurrency, Date from, Date to){
+    public List<SpendJson> getSpends(String username, CurrencyValues filterCurrency, String from, String to){
         final Response<List<SpendJson>> response;
         try {
-            response = spendApi.getSpends(username, filterCurrency, from, to)
+            response = spendApi.allSpends(username, filterCurrency, from, to)
                 .execute();
         } catch (IOException e){
             throw new AssertionError(e);
@@ -93,7 +90,7 @@ public class SpendApiClient implements SpendClient{
     public void deleteSpend(SpendJson spend) {
         final Response<Void> response;
         try {
-            response = spendApi.deleteSpends(spend.username(), List.of(spend.id().toString()))
+            response = spendApi.removeSpends(spend.username(), List.of(spend.id().toString()))
                 .execute();
         } catch (IOException e){
             throw new AssertionError(e);
@@ -106,7 +103,7 @@ public class SpendApiClient implements SpendClient{
     public CategoryJson createCategory(CategoryJson category) {
         final Response<CategoryJson> response;
         try {
-            response = categoriesApi.addCategory(category)
+            response = spendApi.addCategory(category)
                 .execute();
         } catch (IOException e){
             throw new AssertionError(e);
@@ -119,7 +116,7 @@ public class SpendApiClient implements SpendClient{
     public CategoryJson updateCategory(CategoryJson category) {
         final Response<CategoryJson> response;
         try {
-            response = categoriesApi.updateCategory(category)
+            response = spendApi.updateCategory(category)
                 .execute();
         } catch (IOException e){
             throw new AssertionError(e);
@@ -134,10 +131,10 @@ public class SpendApiClient implements SpendClient{
         throw new UnsupportedOperationException("Не поддерживается. Нужно использовать getCategories(String username, boolean excludeArchived)");
     }
 
-    public List<CategoryJson> getCategories(String username, boolean excludeArchived){
+    public List<CategoryJson> getCategories(String username){
         final Response<List<CategoryJson>> response;
         try {
-            response = categoriesApi.getCategories(username, excludeArchived)
+            response = spendApi.allCategories(username)
                 .execute();
         } catch (IOException e){
             throw new AssertionError(e);
