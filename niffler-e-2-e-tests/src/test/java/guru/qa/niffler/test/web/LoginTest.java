@@ -10,8 +10,6 @@ import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
 
-import static guru.qa.niffler.utils.RandomDataUtils.randomUsername;
-
 @WebTest
 public class LoginTest {
 
@@ -33,14 +31,20 @@ public class LoginTest {
   @Test
   void mainPageShouldBeDisplayedAfterSuccessLogin(UserJson user) {
     Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .successLogin(user.username(), user.testData().password())
-        .checkThatPageLoaded();
+        .login(user.username(), user.testData().password())
+        .headersBlocksShouldBeExists();
   }
 
-  @Test
-  void userShouldStayOnLoginPageAfterLoginWithBadCredentials() {
-    LoginPage loginPage = Selenide.open(CFG.frontUrl(), LoginPage.class);
-    loginPage.login(randomUsername(), "BAD");
-    loginPage.checkError("Bad credentials");
-  }
+    @Test
+    public void userShouldStayOnLoginPageAfterLoginWithBadCredentials(){
+
+        String errorMessage = "Неверные учетные данные пользователя";
+
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .login("PetyaMain", "321");
+
+        LoginPage currentLoginPage = new LoginPage();
+        currentLoginPage.shouldBeErrorMessage(errorMessage);
+    }
+
 }

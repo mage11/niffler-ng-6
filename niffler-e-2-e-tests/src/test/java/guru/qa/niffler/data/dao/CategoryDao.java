@@ -11,15 +11,21 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public interface CategoryDao {
 
-  @Nonnull
-  CategoryEntity create(CategoryEntity category);
+    @Nonnull
+    CategoryEntity create(CategoryEntity category);
 
-  @Nonnull
-  Optional<CategoryEntity> findById(UUID id);
+    @Nonnull
+    Optional<CategoryEntity> findById(UUID id);
 
-  @Nonnull
-  List<CategoryEntity> findAll();
+    @Nonnull
+    List<CategoryEntity> findAll();
 
-  @Nonnull
-  CategoryEntity update(CategoryEntity category);
+    Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String categoryName);
+
+    List<CategoryEntity> findAllByUsername(String username);
+
+    @Nonnull
+    CategoryEntity update(CategoryEntity category);
+
+    void delete(CategoryEntity category);
 }

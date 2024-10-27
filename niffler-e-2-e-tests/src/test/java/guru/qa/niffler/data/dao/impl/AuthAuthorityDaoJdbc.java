@@ -19,8 +19,8 @@ import static guru.qa.niffler.data.jdbc.Connections.holder;
 @ParametersAreNonnullByDefault
 public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
 
-  private static final Config CFG = Config.getInstance();
-  private final String url = CFG.authJdbcUrl();
+    private static final Config CFG = Config.getInstance();
+    private final String url = CFG.authJdbcUrl();
 
   @SuppressWarnings("resource")
   @Override
@@ -77,4 +77,17 @@ public class AuthAuthorityDaoJdbc implements AuthAuthorityDao {
       throw new RuntimeException(e);
     }
   }
+
+    @Override
+    public void delete(AuthorityEntity authority) {
+        try (PreparedStatement ps = holder(CFG.authJdbcUrl()).connection().prepareStatement(
+            "DELETE FROM authority WHERE id = ?"
+        )) {
+            ps.setObject(1, authority.getId());
+            ps.execute();
+        }
+        catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

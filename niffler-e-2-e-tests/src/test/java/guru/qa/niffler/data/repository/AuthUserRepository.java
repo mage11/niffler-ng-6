@@ -10,12 +10,17 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public interface AuthUserRepository {
 
-  @Nonnull
-  AuthUserEntity create(AuthUserEntity user);
+    @Nonnull
+    AuthUserEntity create(AuthUserEntity user);
 
-  @Nonnull
-  Optional<AuthUserEntity> findById(UUID id);
+    @Nonnull
+    AuthUserEntity update(AuthUserEntity user);
 
-  @Nonnull
-  Optional<AuthUserEntity> findByUsername(String username);
+    @Nonnull
+    Optional<AuthUserEntity> findById(UUID id);
+
+    @Nonnull
+    Optional<AuthUserEntity> findByUsername(String username);
+
+    void remove(AuthUserEntity user);
 }

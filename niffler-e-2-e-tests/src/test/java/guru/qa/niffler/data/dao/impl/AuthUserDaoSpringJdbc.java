@@ -21,8 +21,8 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public class AuthUserDaoSpringJdbc implements AuthUserDao {
 
-  private static final Config CFG = Config.getInstance();
-  private final String url = CFG.authJdbcUrl();
+    private static final Config CFG = Config.getInstance();
+    private final String url = CFG.authJdbcUrl();
 
   @Nonnull
   @Override
@@ -46,10 +46,10 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
       return ps;
     }, kh);
 
-    final UUID generatedKey = (UUID) kh.getKeys().get("id");
-    user.setId(generatedKey);
-    return user;
-  }
+        final UUID generatedKey = (UUID) kh.getKeys().get("id");
+        user.setId(generatedKey);
+        return user;
+    }
 
   @Nonnull
   @Override
@@ -101,4 +101,10 @@ public class AuthUserDaoSpringJdbc implements AuthUserDao {
         AuthUserEntityRowMapper.instance
     );
   }
+
+    @Override
+    public void deleteAuthUser(AuthUserEntity user) {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(DataSources.dataSource(CFG.authJdbcUrl()));
+        jdbcTemplate.update("DELETE FROM \"user\" WHERE id = ?", user.getId());
+    }
 }

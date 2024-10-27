@@ -11,15 +11,20 @@ import java.util.UUID;
 @ParametersAreNonnullByDefault
 public interface SpendDao {
 
-  @Nonnull
-  SpendEntity create(SpendEntity spend);
+    @Nonnull
+    SpendEntity create(SpendEntity spend);
 
-  @Nonnull
-  Optional<SpendEntity> findById(UUID id);
+    @Nonnull
+    Optional<SpendEntity> findById(UUID id);
 
-  @Nonnull
-  List<SpendEntity> findAll();
+    @Nonnull
+    List<SpendEntity> findAll();
 
-  @Nonnull
-  SpendEntity update(SpendEntity spend);
+    @Nonnull
+    List<SpendEntity> findAllByUserName(String username);
+
+    void deleteSpend(SpendEntity spend);
+
+    @Nonnull
+    SpendEntity update(SpendEntity spend);
 }
