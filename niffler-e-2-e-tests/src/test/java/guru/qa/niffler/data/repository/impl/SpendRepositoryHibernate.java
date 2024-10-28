@@ -77,22 +77,6 @@ public class SpendRepositoryHibernate implements SpendRepository {
 
     @Nonnull
     @Override
-    public Optional<CategoryEntity> findCategoryByUsernameAndCategoryName(String username, String name) {
-        try {
-            return Optional.of(
-                entityManager.createQuery("select c from CategoryEntity c where c.username =: username and c.name =: name", CategoryEntity.class)
-                    .setParameter("username", username)
-                    .setParameter("name", name)
-                    .getSingleResult()
-            );
-        }
-        catch (NoResultException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Nonnull
-    @Override
     public Optional<SpendEntity> findById(UUID id) {
         return Optional.ofNullable(
             entityManager.find(SpendEntity.class, id)

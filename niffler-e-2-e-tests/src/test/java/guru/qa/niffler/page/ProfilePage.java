@@ -19,7 +19,7 @@ import static org.openqa.selenium.Keys.BACK_SPACE;
 import static org.openqa.selenium.Keys.CONTROL;
 
 @ParametersAreNonnullByDefault
-public class ProfilePage {
+public class ProfilePage extends BasePage{
 
     private final SelenideElement usernameInput = $("#username");
     private final SelenideElement nameInput = $("#name");

@@ -70,10 +70,12 @@ public class ProfileTest {
     @User()
     @Test
     void editName(UserJson user) {
+        String successMessage = "Profile successfully updated";
         Selenide.open(CFG.frontUrl(), LoginPage.class)
             .login(user.username(), user.testData().password())
             .clickToProfile()
-            .setNameAndSave(RandomDataUtils.randomName());
+            .setNameAndSave(RandomDataUtils.randomName())
+            .checkAlert(successMessage);
     }
 
 }

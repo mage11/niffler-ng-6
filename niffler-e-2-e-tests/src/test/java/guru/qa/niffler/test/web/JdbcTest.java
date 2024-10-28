@@ -1,11 +1,12 @@
 package guru.qa.niffler.test.web;
 
+import guru.qa.niffler.api.UserApiClient;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendClient;
-import guru.qa.niffler.service.UsersDbClient;
+import guru.qa.niffler.service.impl.UsersDbClient;
 import guru.qa.niffler.service.impl.SpendDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;

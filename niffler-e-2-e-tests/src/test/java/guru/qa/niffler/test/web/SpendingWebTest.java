@@ -28,13 +28,14 @@ public class SpendingWebTest {
   @Test
   void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
     final String newDescription = "Обучение Niffler Next Generation";
-
+    String successMessage = "Spending is edited successfully";
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .login("PetyaMain", "123")
         .headersBlocksShouldBeExists()
         .editSpending(spend.description())
         .setDescription(newDescription)
-        .save();
+        .save()
+        .checkAlert(successMessage);
 
     new MainPage().checkThatTableContainsSpending(newDescription);
   }
@@ -43,6 +44,7 @@ public class SpendingWebTest {
   @Test
   void addNewSpending(UserJson user){
     String categoryName = RandomDataUtils.randomCategoryName();
+    String successMessage = "New spending is successfully created";
     Selenide.open(CFG.frontUrl(), LoginPage.class)
         .login(user.username(), user.testData().password())
         .addNewSpending()
@@ -50,7 +52,8 @@ public class SpendingWebTest {
         .setDate("10/21/2024")
         .setCategory(categoryName)
         .setDescription(RandomDataUtils.randomCategoryName())
-        .save();
+        .save()
+        .checkAlert(successMessage);
   }
 }
 

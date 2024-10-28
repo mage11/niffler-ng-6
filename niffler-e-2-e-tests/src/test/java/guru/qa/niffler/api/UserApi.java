@@ -12,9 +12,6 @@ import java.util.List;
 
 public interface UserApi {
 
-    @POST("/register")
-    Call<UserJson> registerUser(@Body UserJson user);
-
     @GET("/internal/users/current")
     Call<UserJson> currentUser(@Query("username") String username);
 
@@ -28,13 +25,13 @@ public interface UserApi {
     Call<List<UserJson>> allFriends(@Query("username") String username, @Query("searchQuery") String searchQuery);
 
     @POST("internal/invitations/send")
-    Call<UserJson> sendInvitation(@Query("username") String username, @Query("searchQuery") String targetUsername);
+    Call<UserJson> sendInvitation(@Query("username") String username, @Query("targetUsername") String targetUsername);
 
     @POST("internal/invitations/accept")
-    Call<UserJson> acceptInvitation(@Query("username") String username, @Query("searchQuery") String targetUsername);
+    Call<UserJson> acceptInvitation(@Query("username") String username, @Query("targetUsername") String targetUsername);
 
     @DELETE("internal/friends/remove")
-    Call<UserJson> declineInvitation(@Query("username") String username, @Query("searchQuery") String targetUsername);
+    Call<UserJson> declineInvitation(@Query("username") String username, @Query("targetUsername") String targetUsername);
 
 
 }
