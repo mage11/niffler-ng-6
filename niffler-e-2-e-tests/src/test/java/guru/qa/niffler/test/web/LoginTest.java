@@ -9,7 +9,6 @@ import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import org.junit.jupiter.api.Test;
-
 @WebTest
 public class LoginTest {
 
