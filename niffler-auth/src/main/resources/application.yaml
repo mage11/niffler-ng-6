@@ -39,6 +39,8 @@ spring:
 
 logging:
   level:
+    file:
+      path: ./logs/niffler-auth
     root: INFO
     org.springframework.kafka: INFO
     org.springframework.web: INFO
