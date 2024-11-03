@@ -46,6 +46,20 @@ public class UserApiClient extends RestClient implements UsersClient {
         return response.body();
     }
 
+    public List<UserJson> allUsers(UserJson user){
+        final Response<List<UserJson>> response;
+        try {
+            response = userApi.allUsers(user.username(), null).execute();
+        }
+        catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body() == null
+            ? Collections.emptyList()
+            : response.body();
+    }
+
     @Step("Войти в серсив под логином и паролем для пользователя {username}")
     public void login(@Nonnull String username, @Nonnull String password){
         authApiClient.login(username, password);
