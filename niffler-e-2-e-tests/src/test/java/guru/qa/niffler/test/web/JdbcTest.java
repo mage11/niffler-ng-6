@@ -1,9 +1,14 @@
 package guru.qa.niffler.test.web;
 
+import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
+import guru.qa.niffler.jupiter.annotation.meta.WebTest;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.CurrencyValues;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.impl.UsersDbClient;
 import guru.qa.niffler.service.impl.SpendDbClient;
@@ -12,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.awt.image.BufferedImage;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
+@WebTest
 public class JdbcTest {
 
   @Test
@@ -157,6 +163,16 @@ public class JdbcTest {
     usersDbClient.addOutcomeInvitation(user, 1);
     usersDbClient.addFriend(user, user2);
     usersDbClient.addFriend(user, 1);
+  }
+
+  @ScreenShotTest(value = "img/cat-expected.jpeg", rewriteExpected = false)
+  void ttt(BufferedImage expected){
+    Config CFG = Config.getInstance();
+    Selenide.open(CFG.frontUrl(), LoginPage.class)
+        .login("keila.goyette", "12345")
+        .clickToProfile()
+        .uploadPhoto("img/cat.jpeg")
+        .photoShouldBeLikeExpected(expected);
   }
 
 }

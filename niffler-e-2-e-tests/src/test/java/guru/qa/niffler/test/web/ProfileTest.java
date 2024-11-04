@@ -3,6 +3,7 @@ package guru.qa.niffler.test.web;
 import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
+import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.extension.BrowserExtension;
 import guru.qa.niffler.model.CategoryJson;
@@ -11,6 +12,8 @@ import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+
+import java.awt.image.BufferedImage;
 
 @ExtendWith(BrowserExtension.class)
 public class ProfileTest {
@@ -76,6 +79,16 @@ public class ProfileTest {
             .clickToProfile()
             .setNameAndSave(RandomDataUtils.randomName())
             .checkAlert(successMessage);
+    }
+
+    @User
+    @ScreenShotTest(value = "img/cat-expected.jpeg", rewriteExpected = false)
+    void uploadPhoto(BufferedImage expected, UserJson user){
+        Selenide.open(CFG.frontUrl(), LoginPage.class)
+            .login(user.username(), user.testData().password())
+            .clickToProfile()
+            .uploadPhoto("img/cat.jpeg")
+            .photoShouldBeLikeExpected(expected);
     }
 
 }
