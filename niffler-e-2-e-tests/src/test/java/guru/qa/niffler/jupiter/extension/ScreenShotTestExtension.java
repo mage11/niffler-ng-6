@@ -14,6 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 public class ScreenShotTestExtension implements ParameterResolver, TestExecutionExceptionHandler {
@@ -28,10 +29,19 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
     @SneakyThrows
     @Override
     public BufferedImage resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return ImageIO.read(new ClassPathResource("img/expected-stat.png").getInputStream());
+        String path = extensionContext.getRequiredTestMethod().getAnnotation(ScreenShotTest.class).value();
+        return ImageIO.read(new ClassPathResource(path).getInputStream());
     }
     @Override
     public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
+        ScreenShotTest anno = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
+        if(anno.rewriteExpected()){
+            String expectedPath = anno.value();
+            BufferedImage actual = getActual();
+            File file = new File("src/test/resources/" + expectedPath);
+            ImageIO.write(actual, "png", file);
+        }
+
         ScreenDif screenDif = new ScreenDif(
             "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
             "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),

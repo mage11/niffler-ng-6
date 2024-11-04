@@ -9,8 +9,10 @@ import org.openqa.selenium.By;
 
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
@@ -21,6 +23,9 @@ public class SpendingTable {
     private final ElementsCollection options = $$("[role='option']");
     private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
     private final SearchField searchField = new SearchField();
+    private final SelenideElement deleteButtonInContainer =
+        $(By.xpath("//*[starts-with(@class, 'MuiDialog-container')]"))
+            .$(By.xpath("*//button[text()='Delete']"));
 
     @Step("Выбрать период {period}")
     public SpendingTable selectPeriod(DataFilterValues period){
@@ -32,8 +37,9 @@ public class SpendingTable {
     @Step("Удалить трату {description}")
     public SpendingTable deleteSpending(String description){
         searchField.search(description);
-        tableRows.find(exactText(description)).$$("td").get(0).click();
+        tableRows.find(text(description)).$$("td").get(0).click();
         deleteBtn.click();
+        deleteButtonInContainer.click();
         return this;
     }
 
@@ -41,6 +47,12 @@ public class SpendingTable {
     public SpendingTable searchSpendingByDescription(String description){
         searchField.search(description);
         tableRows.find(exactText(description)).shouldBe(visible);
+        return this;
+    }
+
+    public SpendingTable spendingShouldNotBeFound(String description){
+        searchField.search(description);
+        $(byText("There are no spendings")).shouldBe(exist);
         return this;
     }
 

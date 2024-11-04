@@ -1,12 +1,11 @@
 package guru.qa.niffler.jupiter.extension;
 
 import guru.qa.niffler.jupiter.annotation.Category;
-import guru.qa.niffler.jupiter.annotation.User;
+import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.service.SpendApiClient;
 import guru.qa.niffler.service.SpendClient;
-import guru.qa.niffler.service.impl.SpendDbClient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -51,6 +50,15 @@ public class CategoryExtension implements
                         );
 
                         CategoryJson createdCategory = spendClient.createCategory(category);
+                        if(categoryAnno.archived()){
+                            CategoryJson updatedCategory = new CategoryJson(
+                                createdCategory.id(),
+                                categoryName,
+                                user != null ? user.username() : userAnno.username(),
+                                categoryAnno.archived()
+                            );
+                            createdCategory = spendClient.updateCategory(updatedCategory);
+                        }
                         result.add(createdCategory);
                     }
 
