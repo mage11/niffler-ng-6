@@ -34,24 +34,26 @@ public class ScreenShotTestExtension implements ParameterResolver, TestExecution
     }
     @Override
     public void handleTestExecutionException(ExtensionContext context, Throwable throwable) throws Throwable {
-        ScreenShotTest anno = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
-        if(anno.rewriteExpected()){
-            String expectedPath = anno.value();
-            BufferedImage actual = getActual();
-            File file = new File("src/test/resources/" + expectedPath);
-            ImageIO.write(actual, "png", file);
-        }
+        if (throwable.getMessage().contains("Screen comparison failure")) {
+            ScreenShotTest anno = context.getRequiredTestMethod().getAnnotation(ScreenShotTest.class);
+            if(anno.rewriteExpected()){
+                String expectedPath = anno.value();
+                BufferedImage actual = getActual();
+                File file = new File("src/test/resources/" + expectedPath);
+                ImageIO.write(actual, "png", file);
+            }
 
-        ScreenDif screenDif = new ScreenDif(
-            "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
-            "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),
-            "data:image/png;base64," + encoder.encodeToString(imageToBytes(getDiff()))
-        );
-        Allure.addAttachment(
-            "Screenshot diff",
-            "application/vnd.allure.image.diff",
-            objectMapper.writeValueAsString(screenDif)
-        );
+            ScreenDif screenDif = new ScreenDif(
+                "data:image/png;base64," + encoder.encodeToString(imageToBytes(getExpected())),
+                "data:image/png;base64," + encoder.encodeToString(imageToBytes(getActual())),
+                "data:image/png;base64," + encoder.encodeToString(imageToBytes(getDiff()))
+            );
+            Allure.addAttachment(
+                "Screenshot diff",
+                "application/vnd.allure.image.diff",
+                objectMapper.writeValueAsString(screenDif)
+            );
+        }
         throw throwable;
     }
     public static void setExpected(BufferedImage expected) {
