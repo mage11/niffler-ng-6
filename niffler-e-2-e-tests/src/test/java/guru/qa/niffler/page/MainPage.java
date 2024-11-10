@@ -5,6 +5,7 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.page.component.SpendingTable;
+import guru.qa.niffler.page.component.StatComponent;
 import guru.qa.niffler.utils.ScreenDiffResult;
 import org.openqa.selenium.By;
 
@@ -33,6 +34,7 @@ public class MainPage extends BasePage {
     private final SelenideElement statCanvas = $("canvas[role=img]");
     private final Header header = new Header();
     private final SpendingTable spendingTable = new SpendingTable();
+    private final StatComponent statComponent = new StatComponent();
 
     @Nonnull
     public EditSpendingPage editSpending(String spendingDescription) {
@@ -100,5 +102,13 @@ public class MainPage extends BasePage {
     public MainPage spendingShouldNotBeFound(String description){
         spendingTable.spendingShouldNotBeFound(description);
         return this;
+    }
+
+    public StatComponent getStatComponent(){
+        return statComponent;
+    }
+
+    public SpendingTable getSpendingTable(){
+        return spendingTable;
     }
 }

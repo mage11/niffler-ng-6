@@ -71,5 +71,127 @@ public class StatConditions {
         };
     }
 
+    @Nonnull
+    public static WebElementsCondition statBubbles(@Nonnull Bubble... expectedBubbles) {
+        return new WebElementsCondition() {
+            private final String expected = Arrays.stream(expectedBubbles)
+                .map(b -> b.color().rgb + ": " + b.text()).toList().toString();
+            @NotNull
+            @Override
+            public CheckResult check(Driver driver, List<WebElement> elements) {
+                if (ArrayUtils.isEmpty(expectedBubbles)) {
+                    throw new IllegalArgumentException("No expected bubbles given");
+                }
+                if (expectedBubbles.length != elements.size()) {
+                    final String message = String.format("List size mismatch (expected: %s, actual: %s)",
+                        expectedBubbles.length, elements.size());
+                    return rejected(message, elements);
+                }
+                boolean passed = true;
+                final List<String> actualList = new ArrayList<>();
+                for (int i = 0; i < elements.size(); i++) {
+                    final WebElement elementToCheck = elements.get(i);
+                    final Bubble bubbleToCheck = expectedBubbles[i];
+                    final String text = elementToCheck.getText();
+                    final String rgba = elementToCheck.getCssValue("background-color");
+                    actualList.add(rgba + ": " + text);
+                    if (passed) {
+                        passed = bubbleToCheck.color().rgb.equals(rgba) && bubbleToCheck.text().equals(text);
+                    }
+                }
+                if (!passed) {
+                    final String actual = actualList.toString();
+                    final String message = String.format(
+                        "List bubbles mismatch (expected: %s, actual: %s)", expected, actual
+                    );
+                    return rejected(message, actual);
+                }
+                return accepted();
+            }
+            @Override
+            public String toString() {
+                return expected;
+            }
+        };
+    }
+
+    @Nonnull
+    public static WebElementsCondition statBubblesInAnyOrder(@Nonnull Bubble... expectedBubbles) {
+        return new WebElementsCondition() {
+            private final List<String> expectedList = Arrays.stream(expectedBubbles)
+                .map(b -> b.color().rgb + ": " + b.text()).toList();
+            private final String expected = expectedList.toString();
+            @NotNull
+            @Override
+            public CheckResult check(Driver driver, List<WebElement> elements) {
+                if (ArrayUtils.isEmpty(expectedBubbles)) {
+                    throw new IllegalArgumentException("No expected bubbles given");
+                }
+                if (expectedBubbles.length != elements.size()) {
+                    final String message = String.format("List size mismatch (expected: %s, actual: %s)",
+                        expectedBubbles.length, elements.size());
+                    return rejected(message, elements);
+                }
+
+                List<String> actualList = new ArrayList<>();
+                for(WebElement e : elements){
+                    final String text = e.getText();
+                    final String rgba = e.getCssValue("background-color");
+                    actualList.add(rgba + ": " + text);
+                }
+
+                if (actualList.containsAll(expectedList) && expectedList.containsAll(actualList)){
+                    return accepted();
+                } else {
+                    final String actual = actualList.toString();
+                    final String message = String.format(
+                        "List bubbles mismatch (expected: %s, actual: %s)", expected, actual
+                    );
+                    return rejected(message, actual);
+                }
+            }
+            @Override
+            public String toString() {
+                return expected;
+            }
+        };
+    }
+
+    @Nonnull
+    public static WebElementsCondition statBubblesContains(@Nonnull Bubble... expectedBubbles) {
+        return new WebElementsCondition() {
+            private final List<String> expectedList = Arrays.stream(expectedBubbles)
+                .map(b -> b.color().rgb + ": " + b.text()).toList();
+            private final String expected = expectedList.toString();
+            @NotNull
+            @Override
+            public CheckResult check(Driver driver, List<WebElement> elements) {
+                if (ArrayUtils.isEmpty(expectedBubbles)) {
+                    throw new IllegalArgumentException("No expected bubbles given");
+                }
+
+                List<String> actualList = new ArrayList<>();
+                for(WebElement e : elements){
+                    final String text = e.getText();
+                    final String rgba = e.getCssValue("background-color");
+                    actualList.add(rgba + ": " + text);
+                }
+
+                if (actualList.containsAll(expectedList)){
+                    return accepted();
+                } else {
+                    final String actual = actualList.toString();
+                    final String message = String.format(
+                        "List bubbles mismatch (expected: %s, actual: %s)", expected, actual
+                    );
+                    return rejected(message, actual);
+                }
+            }
+            @Override
+            public String toString() {
+                return expected;
+            }
+        };
+    }
 
 }
