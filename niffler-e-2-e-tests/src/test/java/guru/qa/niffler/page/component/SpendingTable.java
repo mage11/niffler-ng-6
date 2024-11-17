@@ -1,6 +1,7 @@
 package guru.qa.niffler.page.component;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.page.EditSpendingPage;
@@ -14,20 +15,30 @@ import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
+
 import static guru.qa.niffler.condition.SpendConditions.spends;
 
 public class SpendingTable {
 
-    private final SelenideElement periodElement = $(By.xpath("//div[@id='period']"));
-    private final SelenideElement deleteBtn = $(By.xpath("//button[@id='delete']"));
-    private final ElementsCollection options = $$("[role='option']");
-    private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
-    private final SearchField searchField = new SearchField();
-    private final SelenideElement deleteButtonInContainer =
-        $(By.xpath("//*[starts-with(@class, 'MuiDialog-container')]"))
-            .$(By.xpath("*//button[text()='Delete']"));
+    private final SelenideElement periodElement;
+    private final SelenideElement deleteBtn;
+    private final ElementsCollection options;
+    private final ElementsCollection tableRows;
+    private final SearchField searchField;
+    private final SelenideElement deleteButtonInContainer;
+    private final SelenideDriver driver;
+
+    public SpendingTable(SelenideDriver driver){
+        this.driver = driver;
+        this.periodElement = driver.$(By.xpath("//div[@id='period']"));
+        this.deleteBtn = driver.$(By.xpath("//button[@id='delete']"));
+        this.options = driver.$$("[role='option']");
+        this.tableRows = driver.$("#spendings tbody").$$("tr");
+        this.deleteButtonInContainer =
+            driver.$(By.xpath("//*[starts-with(@class, 'MuiDialog-container')]"))
+                .$(By.xpath("*//button[text()='Delete']"));
+        this.searchField = new SearchField(driver);
+    }
 
     @Step("Выбрать период {period}")
     public SpendingTable selectPeriod(DataFilterValues period){
@@ -54,7 +65,7 @@ public class SpendingTable {
 
     public SpendingTable spendingShouldNotBeFound(String description){
         searchField.search(description);
-        $(byText("There are no spendings")).shouldBe(exist);
+        driver.$(byText("There are no spendings")).shouldBe(exist);
         return this;
     }
 
@@ -75,7 +86,7 @@ public class SpendingTable {
     @Step("Открыть на редактирование трату {description}")
     public EditSpendingPage editSpending(String description){
         tableRows.find(text(description)).$$("td").get(5).click();
-        return new EditSpendingPage();
+        return new EditSpendingPage(driver);
     }
 
     @Step("Проверить таблицу трат на содержание трат {expectedSpends}")

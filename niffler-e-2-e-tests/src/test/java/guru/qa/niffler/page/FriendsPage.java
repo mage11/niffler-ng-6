@@ -1,40 +1,45 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
+
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
-import com.github.javafaker.Friends;
 import guru.qa.niffler.page.component.SearchField;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.codeborne.selenide.CollectionCondition.size;
-import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
-import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class FriendsPage {
+public class FriendsPage extends BasePage<FriendsPage>{
 
-    private final SelenideElement friendsButton = $("a[href='/people/friends']");
-    private final SelenideElement allPeopleButton = $("a[href='/people/all']");
-    private final SelenideElement panelFriends = $("#simple-tabpanel-friends");
-    private final ElementsCollection allPeopleList = $$("tbody>tr");
-    private final ElementsCollection friendList =
-        $$(By.xpath("//h2[text()='My friends']/following-sibling::table/tbody/tr"));
-    private final ElementsCollection requestsList =
-        $$(By.xpath("//h2[text()='Friend requests']/following-sibling::table/tbody/tr"));
-    private final SelenideElement declineButtonInContainer =
-        $(By.xpath("//*[starts-with(@class, 'MuiDialog-container')]"))
-            .$(By.xpath("*//button[text()='Decline']"));
-    private final SearchField searchField = new SearchField();
+    private final SelenideElement allPeopleButton;
+    private final SelenideElement panelFriends;
+    private final ElementsCollection allPeopleList;
+    private final ElementsCollection friendList;
+    private final ElementsCollection requestsList;
+    private final SelenideElement declineButtonInContainer;
+    private final SearchField searchField;
+
+    public FriendsPage(SelenideDriver driver){
+        super(driver);
+        this.allPeopleButton = driver.$("a[href='/people/all']");
+        this.panelFriends = driver.$("#simple-tabpanel-friends");
+        this.allPeopleList = driver.$$("tbody>tr");
+        this.friendList =
+            driver.$$(By.xpath("//h2[text()='My friends']/following-sibling::table/tbody/tr"));
+        this.requestsList =
+            driver.$$(By.xpath("//h2[text()='Friend requests']/following-sibling::table/tbody/tr"));
+        this.declineButtonInContainer =
+            driver.$(By.xpath("//*[starts-with(@class, 'MuiDialog-container')]"))
+                .$(By.xpath("*//button[text()='Decline']"));
+        this.searchField = new SearchField(driver);
+
+    }
 
     @Step("Проверить существование влкадки друзей")
     public FriendsPage panelFriendsShouldBeExist() {

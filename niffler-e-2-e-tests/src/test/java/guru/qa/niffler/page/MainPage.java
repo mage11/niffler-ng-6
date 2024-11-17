@@ -1,7 +1,7 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.page.component.SpendingTable;
@@ -19,28 +19,39 @@ import java.io.IOException;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ParametersAreNonnullByDefault
-public class MainPage extends BasePage {
+public class MainPage extends BasePage<MainPage> {
 
-    private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
-    private final SelenideElement statisticBlock = $("#stat");
-    private final SelenideElement spendingBlock = $("#spendings");
-    private final SelenideElement searchInput = $(By.xpath("//input[@placeholder='Search']"));
-    private final ElementsCollection legendContainers = $$("#legend-container>ul>li");
-    private final SelenideElement statCanvas = $("canvas[role=img]");
-    private final Header header = new Header();
-    private final SpendingTable spendingTable = new SpendingTable();
-    private final StatComponent statComponent = new StatComponent();
+    private final ElementsCollection tableRows;
+    private final SelenideElement statisticBlock;
+    private final SelenideElement spendingBlock;
+    private final SelenideElement searchInput;
+    private final ElementsCollection legendContainers;
+    private final SelenideElement statCanvas;
+    private final Header header;
+    private final SpendingTable spendingTable;
+    private final StatComponent statComponent;
+
+    public MainPage(SelenideDriver driver){
+        super(driver);
+        this.tableRows = driver.$("#spendings tbody").$$("tr");
+        this.statisticBlock = driver.$("#stat");
+        this.spendingBlock = driver.$("#spendings");
+        this.searchInput = driver.$(By.xpath("//input[@placeholder='Search']"));
+        this.legendContainers = driver.$$("#legend-container>ul>li");
+        this.statCanvas = driver.$("canvas[role=img]");
+        this.header = new Header(driver);
+        this.spendingTable = new SpendingTable(driver);
+        this.statComponent = new StatComponent(driver);
+    }
 
     @Nonnull
     public EditSpendingPage editSpending(String spendingDescription) {
         searchInput.setValue(spendingDescription).pressEnter();
         tableRows.find(text(spendingDescription)).$$("td").get(5).click();
-        return new EditSpendingPage();
+        return new EditSpendingPage(driver);
     }
 
     @Nonnull
@@ -75,8 +86,8 @@ public class MainPage extends BasePage {
         return header.addNewSpendingPage();
     }
 
-    public MainPage statisticImgShouldBeLikeExpected(BufferedImage expected){
-        Selenide.sleep(2000);
+    public MainPage statisticImgShouldBeLikeExpected(BufferedImage expected) throws InterruptedException {
+        Thread.sleep(2000);
         BufferedImage actual;
         try {
             actual = ImageIO.read(statCanvas.screenshot());

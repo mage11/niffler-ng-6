@@ -1,13 +1,14 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 
 public class RegistrationTest {
-
+    private final SelenideDriver driver = new SelenideDriver(SelenideUtils.chromeConfig);
     private static final Config CFG = Config.getInstance();
     private final String messageOfSuccessRegistration = "Congratulations! You've registered!";
 
@@ -17,7 +18,7 @@ public class RegistrationTest {
         String username = getRandomString();
         String password = getRandomString();
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class)
             .clickToCreateNewAccountButton()
             .setUserName(username)
             .setPassword(password)
@@ -34,7 +35,7 @@ public class RegistrationTest {
         String password = getRandomString();
         String errorMessage = "Username `" + username + "` already exists";
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class)
             .clickToCreateNewAccountButton()
             .setUserName(username)
             .setPassword(password)
@@ -57,7 +58,7 @@ public class RegistrationTest {
         String password = getRandomString();
         String passwordNotEqual = "Passwords should be equal";
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class)
             .clickToCreateNewAccountButton()
             .setUserName(username)
             .setPassword(password)
@@ -74,7 +75,7 @@ public class RegistrationTest {
         String password = "1";
         String passwordErrorLength = "Allowed password length should be from 3 to 12 characters";
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class)
             .clickToCreateNewAccountButton()
             .setUserName(username)
             .setPassword(password)

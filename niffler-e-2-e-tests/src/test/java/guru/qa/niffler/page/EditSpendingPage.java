@@ -1,5 +1,6 @@
 package guru.qa.niffler.page;
 
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.Calendar;
 
@@ -8,19 +9,27 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
-import static com.codeborne.selenide.Selenide.$;
 import static org.openqa.selenium.Keys.BACK_SPACE;
 import static org.openqa.selenium.Keys.CONTROL;
 
 @ParametersAreNonnullByDefault
-public class EditSpendingPage {
+public class EditSpendingPage extends BasePage<EditSpendingPage> {
 
-    private final SelenideElement saveBtn = $("#save");
-    private final SelenideElement amount = $(By.xpath("//input[@id='amount']"));
-    private final SelenideElement category = $(By.xpath("//input[@id='category']"));
-    private final SelenideElement description = $(By.xpath("//input[@id='description']"));
-    private Calendar calendar = new Calendar();
+    private final SelenideElement saveBtn;
+    private final SelenideElement amount;
+    private final SelenideElement category;
+    private final SelenideElement description;
+    private Calendar calendar;
 
+    public EditSpendingPage(SelenideDriver driver){
+        super(driver);
+        this.saveBtn = driver.$("#save");
+        this.amount = driver.$(By.xpath("//input[@id='amount']"));
+        this.category = driver.$(By.xpath("//input[@id='category']"));
+        this.description = driver.$(By.xpath("//input[@id='description']"));
+        this.calendar  = new Calendar(driver);
+
+    }
     @Step("Указать стоимость")
     public EditSpendingPage setAmount(String amountValue) {
         amount.sendKeys(CONTROL + "a");
@@ -54,6 +63,6 @@ public class EditSpendingPage {
     @Step("Сохранить трату")
     public MainPage save() {
         saveBtn.click();
-        return new MainPage();
+        return new MainPage(driver);
     }
 }

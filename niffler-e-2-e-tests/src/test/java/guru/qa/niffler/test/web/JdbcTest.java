@@ -1,6 +1,6 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
@@ -13,6 +13,7 @@ import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.impl.UsersDbClient;
 import guru.qa.niffler.service.impl.SpendDbClient;
 import guru.qa.niffler.utils.RandomDataUtils;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -28,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 @WebTest
 public class JdbcTest {
+  private final SelenideDriver driver = new SelenideDriver(SelenideUtils.chromeConfig);
 
   @Test
   void txTest() {
@@ -168,7 +170,7 @@ public class JdbcTest {
   @ScreenShotTest(value = "img/cat-expected.jpeg", rewriteExpected = false)
   void ttt(BufferedImage expected){
     Config CFG = Config.getInstance();
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
+    driver.open(CFG.frontUrl(), LoginPage.class)
         .login("keila.goyette", "12345")
         .clickToProfile()
         .uploadPhoto("img/cat.jpeg")

@@ -1,6 +1,7 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
+import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.SelenideElement;
 import guru.qa.niffler.page.component.SearchField;
 import guru.qa.niffler.utils.ScreenDiffResult;
@@ -17,25 +18,32 @@ import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$$;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.openqa.selenium.Keys.BACK_SPACE;
 import static org.openqa.selenium.Keys.CONTROL;
 
 @ParametersAreNonnullByDefault
-public class ProfilePage extends BasePage{
+public class ProfilePage extends BasePage<ProfilePage>{
 
-    private final SelenideElement usernameInput = $("#username");
-    private final SelenideElement nameInput = $("#name");
-    private final SelenideElement categoryInput = $("#category");
-    private final SelenideElement saveChangesButton = $("button[type='submit']");
-    private final SelenideElement showArchivedToggle = $(By.xpath("//input[@type='checkbox']"));
-    private final ElementsCollection categories = $$(".MuiChip-label");
-    private final SearchField searchField = new SearchField();
-    private final SelenideElement photoInput = $("#image__input");
-    private final SelenideElement avatar = $(".MuiAvatar-img");
+    private final SelenideElement nameInput;
+    private final SelenideElement saveChangesButton;
+    private final SelenideElement showArchivedToggle;
+    private final ElementsCollection categories;
+    private final SearchField searchField;
+    private final SelenideElement photoInput;
+    private final SelenideElement avatar;
 
+    public ProfilePage(SelenideDriver driver){
+        super(driver);
+        this.nameInput = driver.$("#name");
+        this.saveChangesButton = driver.$("button[type='submit']");
+        this.showArchivedToggle = driver.$(By.xpath("//input[@type='checkbox']"));
+        this.categories = driver.$$(".MuiChip-label");
+        this.photoInput = driver.$("#image__input");
+        this.avatar = driver.$(".MuiAvatar-img");
+        this.searchField = new SearchField(driver);
+
+    }
     @Step("Переключить переключатель отображения архивных категорий ")
     @Nonnull
     public ProfilePage clickToShowArchivedToggle() {

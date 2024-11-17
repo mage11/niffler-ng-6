@@ -1,6 +1,6 @@
 package guru.qa.niffler.test.web;
 
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
@@ -10,6 +10,7 @@ import guru.qa.niffler.model.CategoryJson;
 import guru.qa.niffler.model.UserJson;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.utils.RandomDataUtils;
+import guru.qa.niffler.utils.SelenideUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -17,7 +18,7 @@ import java.awt.image.BufferedImage;
 
 @ExtendWith(BrowserExtension.class)
 public class ProfileTest {
-
+    private final SelenideDriver driver = new SelenideDriver(SelenideUtils.chromeConfig);
     private static final Config CFG = Config.getInstance();
 
 
@@ -31,7 +32,7 @@ public class ProfileTest {
     @Test
     public void archivedCategoryShouldPresentInCategoriesList(CategoryJson category) {
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class)
             .login("PetyaMain", "123")
             .clickToProfile()
             .clickToShowArchivedToggle()
@@ -48,7 +49,7 @@ public class ProfileTest {
     @Test
     public void activeCategoryShouldPresentInCategoriesList(CategoryJson category) {
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class)
             .login("PetyaMain", "123")
             .clickToProfile()
             .searchingCategoryShouldBeExist(category.name());
@@ -64,7 +65,7 @@ public class ProfileTest {
     @Test
     public void archivedCategoryShouldNotPresentInCategoriesList(CategoryJson category) {
 
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class)
             .login("PetyaMain", "123")
             .clickToProfile()
             .searchingCategoryShouldNotBeExist(category.name());
@@ -74,7 +75,7 @@ public class ProfileTest {
     @Test
     void editName(UserJson user) {
         String successMessage = "Profile successfully updated";
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class)
             .login(user.username(), user.testData().password())
             .clickToProfile()
             .setNameAndSave(RandomDataUtils.randomName())
@@ -84,7 +85,7 @@ public class ProfileTest {
     @User
     @ScreenShotTest(value = "img/cat-expected.jpeg", rewriteExpected = false)
     void uploadPhoto(BufferedImage expected, UserJson user){
-        Selenide.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl(), LoginPage.class)
             .login(user.username(), user.testData().password())
             .clickToProfile()
             .uploadPhoto("img/cat.jpeg")
