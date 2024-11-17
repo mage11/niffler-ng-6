@@ -2,23 +2,31 @@ package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.SelenideDriver;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.converter.BrowserConverter;
+import guru.qa.niffler.jupiter.converter.Browsers;
 import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.utils.SelenideUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.provider.EnumSource;
 
 public class RegistrationTest {
-    private final SelenideDriver driver = new SelenideDriver(SelenideUtils.chromeConfig);
+    private final SelenideDriver defaultDriver = new SelenideDriver(SelenideUtils.chromeConfig);
     private static final Config CFG = Config.getInstance();
     private final String messageOfSuccessRegistration = "Congratulations! You've registered!";
 
-    @Test
-    public void shouldRegisterNewUser(){
+    @ParameterizedTest
+    @EnumSource(Browsers.class)
+    public void shouldRegisterNewUser(@ConvertWith(BrowserConverter.class) SelenideDriver driver){
 
         String username = getRandomString();
         String password = getRandomString();
 
-        driver.open(CFG.frontUrl(), LoginPage.class)
+        driver.open(CFG.frontUrl());
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage
             .clickToCreateNewAccountButton()
             .setUserName(username)
             .setPassword(password)
@@ -35,7 +43,7 @@ public class RegistrationTest {
         String password = getRandomString();
         String errorMessage = "Username `" + username + "` already exists";
 
-        driver.open(CFG.frontUrl(), LoginPage.class)
+        defaultDriver.open(CFG.frontUrl(), LoginPage.class)
             .clickToCreateNewAccountButton()
             .setUserName(username)
             .setPassword(password)
@@ -58,7 +66,7 @@ public class RegistrationTest {
         String password = getRandomString();
         String passwordNotEqual = "Passwords should be equal";
 
-        driver.open(CFG.frontUrl(), LoginPage.class)
+        defaultDriver.open(CFG.frontUrl(), LoginPage.class)
             .clickToCreateNewAccountButton()
             .setUserName(username)
             .setPassword(password)
@@ -75,7 +83,7 @@ public class RegistrationTest {
         String password = "1";
         String passwordErrorLength = "Allowed password length should be from 3 to 12 characters";
 
-        driver.open(CFG.frontUrl(), LoginPage.class)
+        defaultDriver.open(CFG.frontUrl(), LoginPage.class)
             .clickToCreateNewAccountButton()
             .setUserName(username)
             .setPassword(password)

@@ -1,7 +1,9 @@
 package guru.qa.niffler.jupiter.extension;
 
+import com.codeborne.selenide.SelenideConfig;
 import com.codeborne.selenide.SelenideDriver;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import guru.qa.niffler.jupiter.converter.Browsers;
 import io.qameta.allure.Allure;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -13,31 +15,30 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
 import java.io.ByteArrayInputStream;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BrowserExtension implements
     BeforeEachCallback,
     AfterEachCallback,
     TestExecutionExceptionHandler,
     LifecycleMethodExecutionExceptionHandler {
-
-  private final List<SelenideDriver> drivers = new ArrayList<>();
-  public List<SelenideDriver> drivers() {
-    return drivers;
-  }
+  private static final ThreadLocal<SelenideDriver> driver = new ThreadLocal<>();
 
   @Override
   public void afterEach(ExtensionContext context) throws Exception {
-    for (SelenideDriver driver : drivers) {
-      if (driver.hasWebDriverStarted()) {
-        driver.close();
+    if (driver.get().hasWebDriverStarted()) {
+        driver.get().close();
       }
-    }
   }
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
+    String browser = context.getDisplayName();
+    SelenideConfig config = browser.equals(Browsers.FIREFOX.name())
+        ? Browsers.FIREFOX.driverConfig()
+        : Browsers.CHROME.driverConfig();
+
+    driver.set(new SelenideDriver(config));
+
     SelenideLogger.addListener("Allure-selenide", new AllureSelenide()
         .savePageSource(false)
         .screenshots(false)
@@ -63,15 +64,13 @@ public class BrowserExtension implements
   }
 
   private void doScreenshot() {
-    for (SelenideDriver driver : drivers) {
-      if (driver.hasWebDriverStarted()) {
-        Allure.addAttachment(
-            "Screen on fail for browser: " + driver.getSessionId(),
-            new ByteArrayInputStream(
-                ((TakesScreenshot) driver.getWebDriver()).getScreenshotAs(OutputType.BYTES)
-            )
-        );
-      }
+    if (driver.get().hasWebDriverStarted()) {
+      Allure.addAttachment(
+          "Screen on fail for browser: " + driver.get().getSessionId(),
+          new ByteArrayInputStream(
+              ((TakesScreenshot) driver.get()).getScreenshotAs(OutputType.BYTES)
+          )
+      );
     }
   }
 }
