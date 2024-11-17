@@ -32,10 +32,8 @@ public class BrowserExtension implements
 
   @Override
   public void beforeEach(ExtensionContext context) throws Exception {
-
-    SelenideConfig config;
     String browser = context.getDisplayName();
-    config = browser.equals(Browsers.FIREFOX.name())
+    SelenideConfig config = browser.equals(Browsers.FIREFOX.name())
         ? Browsers.FIREFOX.driverConfig()
         : Browsers.CHROME.driverConfig();
 
