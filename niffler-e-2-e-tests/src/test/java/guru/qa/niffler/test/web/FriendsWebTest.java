@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith({BrowserExtension.class, UsersQueueExtension.class})
-public class FriendWebTest {
+public class FriendsWebTest {
 
     private static final Config CFG = Config.getInstance();
 
