@@ -1,6 +1,7 @@
 package guru.qa.niffler.test.web;
 
 import com.codeborne.selenide.Selenide;
+import guru.qa.niffler.api.AuthApiClient;
 import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
@@ -12,6 +13,7 @@ import guru.qa.niffler.page.LoginPage;
 import guru.qa.niffler.service.SpendClient;
 import guru.qa.niffler.service.impl.UsersDbClient;
 import guru.qa.niffler.service.impl.SpendDbClient;
+import guru.qa.niffler.utils.OauthUtils;
 import guru.qa.niffler.utils.RandomDataUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -173,6 +175,13 @@ public class JdbcTest {
         .clickToProfile()
         .uploadPhoto("img/cat.jpeg")
         .photoShouldBeLikeExpected(expected);
+  }
+
+  @Test
+  void testOauth(){
+    AuthApiClient authApiClient = new AuthApiClient();
+    String token = authApiClient.login("keila.goyette", "12345");
+    assertNotNull(token);
   }
 
 }
