@@ -13,15 +13,11 @@ public class CodeInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         final Response response = chain.proceed(chain.request());
-        if (response.isRedirect()) {
-            String location = Objects.requireNonNull(
-                response.header("Location")
-            );
+        if (response.isRedirect() && response.header("Location") != null) {
+            String location = response.header("Location");
             if (location.contains("code=")) {
                 CodeStore.setCode(
-                    StringUtils.substringAfter(
-                        location, "code="
-                    )
+                    StringUtils.substringAfter(location, "code=")
                 );
             }
         }
