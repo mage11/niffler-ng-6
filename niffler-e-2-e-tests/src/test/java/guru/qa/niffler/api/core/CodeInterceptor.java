@@ -1,12 +1,10 @@
 package guru.qa.niffler.api.core;
 
-import com.github.jknack.handlebars.Formatter;
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
 import java.io.IOException;
-import java.util.Objects;
 
 public class CodeInterceptor implements Interceptor {
 
