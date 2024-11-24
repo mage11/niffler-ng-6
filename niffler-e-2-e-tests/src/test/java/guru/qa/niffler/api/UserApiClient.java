@@ -2,7 +2,7 @@ package guru.qa.niffler.api;
 
 import com.google.common.base.Stopwatch;
 import guru.qa.niffler.api.core.RestClient;
-import guru.qa.niffler.model.UserJson;
+import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.utils.RandomDataUtils;
 import io.qameta.allure.Step;
@@ -58,11 +58,6 @@ public class UserApiClient extends RestClient implements UsersClient {
         return response.body() == null
             ? Collections.emptyList()
             : response.body();
-    }
-
-    @Step("Войти в серсив под логином и паролем для пользователя {username}")
-    public void login(@Nonnull String username, @Nonnull String password){
-        authApiClient.login(username, password);
     }
 
     @Override

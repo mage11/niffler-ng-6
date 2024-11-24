@@ -1,5 +1,9 @@
 package guru.qa.niffler.model;
 
+import guru.qa.niffler.model.rest.CategoryJson;
+import guru.qa.niffler.model.rest.SpendJson;
+import guru.qa.niffler.model.rest.UserJson;
+
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,8 +12,8 @@ public record TestData(
     String password,
     List<CategoryJson> categories,
     List<SpendJson> spendings,
-    List<UserJson> incomeFriends,
-    List<UserJson> outcomeFriends,
+    List<UserJson> incomeInvitations,
+    List<UserJson> outcomeInvitations,
     List<UserJson> friends) {
 
     public TestData(@Nonnull String password) {
@@ -21,11 +25,11 @@ public record TestData(
     }
 
     public @Nonnull String[] incomeInvitationsUsernames() {
-        return extractUsernames(incomeFriends);
+        return extractUsernames(incomeInvitations);
     }
 
     public @Nonnull String[] outcomeInvitationsUsernames() {
-        return extractUsernames(outcomeFriends);
+        return extractUsernames(outcomeInvitations);
     }
 
     public @Nonnull String[] categoryDescriptions() {
