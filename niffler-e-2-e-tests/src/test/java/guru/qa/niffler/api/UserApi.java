@@ -8,6 +8,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface UserApi {
@@ -32,6 +33,14 @@ public interface UserApi {
 
     @DELETE("internal/friends/remove")
     Call<UserJson> declineInvitation(@Query("username") String username, @Query("targetUsername") String targetUsername);
+
+    @GET("internal/invitations/income")
+    Call<List<UserJson>> incomeInvitations(@Query("username") String username,
+                                           @Query("searchQuery") @Nullable String searchQuery);
+
+    @GET("internal/invitations/outcome")
+    Call<List<UserJson>> outcomeInvitations(@Query("username") String username,
+                                            @Query("searchQuery") @Nullable String searchQuery);
 
 
 }

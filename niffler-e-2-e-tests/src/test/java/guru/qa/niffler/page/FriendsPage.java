@@ -1,19 +1,13 @@
 package guru.qa.niffler.page;
 
 import com.codeborne.selenide.ElementsCollection;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import com.github.javafaker.Friends;
 import guru.qa.niffler.page.component.SearchField;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
-import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import static com.codeborne.selenide.CollectionCondition.size;
-import static com.codeborne.selenide.CollectionCondition.textsInAnyOrder;
-import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.exist;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
@@ -21,8 +15,9 @@ import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
 
 @ParametersAreNonnullByDefault
-public class FriendsPage {
+public class FriendsPage extends BasePage<FriendsPage> {
 
+    public static final String URL = CFG.frontUrl() + "people/friends";
     private final SelenideElement friendsButton = $("a[href='/people/friends']");
     private final SelenideElement allPeopleButton = $("a[href='/people/all']");
     private final SelenideElement panelFriends = $("#simple-tabpanel-friends");
