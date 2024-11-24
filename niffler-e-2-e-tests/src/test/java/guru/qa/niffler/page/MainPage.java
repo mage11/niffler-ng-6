@@ -7,6 +7,7 @@ import guru.qa.niffler.page.component.Header;
 import guru.qa.niffler.page.component.SpendingTable;
 import guru.qa.niffler.page.component.StatComponent;
 import guru.qa.niffler.utils.ScreenDiffResult;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 
 import javax.annotation.Nonnull;
@@ -24,8 +25,9 @@ import static com.codeborne.selenide.Selenide.$$;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @ParametersAreNonnullByDefault
-public class MainPage extends BasePage {
+public class MainPage extends BasePage<MainPage> {
 
+    public static final String URL = CFG.frontUrl() + "main";
     private final ElementsCollection tableRows = $("#spendings tbody").$$("tr");
     private final SelenideElement statisticBlock = $("#stat");
     private final SelenideElement spendingBlock = $("#spendings");
@@ -101,6 +103,13 @@ public class MainPage extends BasePage {
 
     public MainPage spendingShouldNotBeFound(String description){
         spendingTable.spendingShouldNotBeFound(description);
+        return this;
+    }
+
+    @Step("Check that page is loaded")
+    @Nonnull
+    public MainPage checkThatPageLoaded() {
+        statComponent.getSelf().should(visible).shouldHave(text("Statistics"));
         return this;
     }
 

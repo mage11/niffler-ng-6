@@ -1,6 +1,7 @@
 package guru.qa.niffler.api.core;
 
 import com.github.jknack.handlebars.internal.lang3.StringUtils;
+import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
@@ -14,7 +15,7 @@ public class CodeInterceptor implements Interceptor {
         if (response.isRedirect() && response.header("Location") != null) {
             String location = response.header("Location");
             if (location.contains("code=")) {
-                CodeStore.setCode(
+                ApiLoginExtension.setCode(
                     StringUtils.substringAfter(location, "code=")
                 );
             }

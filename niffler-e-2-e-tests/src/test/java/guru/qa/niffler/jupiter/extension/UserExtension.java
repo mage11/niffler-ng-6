@@ -50,20 +50,16 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
                 if (userAnno.friends()){
                     friends = usersClient.addOutcomeInvitation(testUser, 1);
                 }
-
-                context.getStore(NAMESPACE).put(
-                    context.getUniqueId(),
-                    testUser.addTestData(
-                        new TestData(
-                            defaultPassword,
-                            new ArrayList<>(),
-                            new ArrayList<>(),
-                            incomeUsers,
-                            outcomeUsers,
-                            friends
-                        )
+                setUser(testUser.addTestData(
+                    new TestData(
+                        defaultPassword,
+                        new ArrayList<>(),
+                        new ArrayList<>(),
+                        incomeUsers,
+                        outcomeUsers,
+                        friends
                     )
-                );
+                ));
 
             });
     }
@@ -75,6 +71,18 @@ public class UserExtension implements BeforeEachCallback, ParameterResolver {
 
     @Override
     public UserJson resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
-        return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), UserJson.class);
+        return getUserJson();
+    }
+
+    public static void setUser(UserJson testUser) {
+        final ExtensionContext context = TestMethodContextExtension.context();
+        context.getStore(NAMESPACE).put(
+            context.getUniqueId(),
+            testUser
+        );
+    }
+    public static UserJson getUserJson() {
+        final ExtensionContext context = TestMethodContextExtension.context();
+        return context.getStore(NAMESPACE).get(context.getUniqueId(), UserJson.class);
     }
 }

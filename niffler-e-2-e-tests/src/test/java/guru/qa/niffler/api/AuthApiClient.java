@@ -2,9 +2,9 @@ package guru.qa.niffler.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import guru.qa.niffler.api.core.CodeInterceptor;
-import guru.qa.niffler.api.core.CodeStore;
 import guru.qa.niffler.api.core.RestClient;
 import guru.qa.niffler.api.core.ThreadSafeCookieStore;
+import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
 import guru.qa.niffler.utils.OauthUtils;
 import retrofit2.Response;
 
@@ -53,7 +53,7 @@ public class AuthApiClient extends RestClient {
                 CLIENT_ID,
                 REDIRECT_URI,
                 GRANT_TYPE,
-                CodeStore.getCode(),
+                ApiLoginExtension.getCode(),
                 codeVerifier
             ).execute();
 
