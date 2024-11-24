@@ -179,4 +179,52 @@ public class UserApiClient extends RestClient implements UsersClient {
         return response.body();
     }
 
+    @Step("Получение входящих приглашений юзера {username}")
+    @Nonnull
+    public List<UserJson> getIncomeInvitations(String username, String searchQuery) {
+        final Response<List<UserJson>> response;
+        try {
+            response = userApi.incomeInvitations(username, searchQuery)
+                .execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body() == null
+            ? Collections.emptyList()
+            : response.body();
+    }
+
+    @Step("Получение исходящих приглашений юзера {username}")
+    @Nonnull
+    public List<UserJson> getOutcomeInvitations(String username, String searchQuery) {
+        final Response<List<UserJson>> response;
+        try {
+            response = userApi.outcomeInvitations(username, searchQuery)
+                .execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body() == null
+            ? Collections.emptyList()
+            : response.body();
+    }
+
+    @Step("Получение всех друзей юзера {username}")
+    @Nonnull
+    public List<UserJson> getAllFriends(String username, String searchQuery) {
+        final Response<List<UserJson>> response;
+        try {
+            response = userApi.allFriends(username, searchQuery)
+                .execute();
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+        assertEquals(200, response.code());
+        return response.body() == null
+            ? Collections.emptyList()
+            : response.body();
+    }
+
 }

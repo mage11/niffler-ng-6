@@ -13,8 +13,8 @@ import static org.openqa.selenium.Keys.BACK_SPACE;
 import static org.openqa.selenium.Keys.CONTROL;
 
 @ParametersAreNonnullByDefault
-public class EditSpendingPage {
-
+public class EditSpendingPage extends BasePage<EditSpendingPage> {
+    public static final String URL = CFG.frontUrl() + "spending";
     private final SelenideElement saveBtn = $("#save");
     private final SelenideElement amount = $(By.xpath("//input[@id='amount']"));
     private final SelenideElement category = $(By.xpath("//input[@id='category']"));

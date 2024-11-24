@@ -24,8 +24,8 @@ import static org.openqa.selenium.Keys.BACK_SPACE;
 import static org.openqa.selenium.Keys.CONTROL;
 
 @ParametersAreNonnullByDefault
-public class ProfilePage extends BasePage{
-
+public class ProfilePage extends BasePage<ProfilePage>{
+    public static final String URL = CFG.frontUrl() + "profile";
     private final SelenideElement usernameInput = $("#username");
     private final SelenideElement nameInput = $("#name");
     private final SelenideElement categoryInput = $("#category");

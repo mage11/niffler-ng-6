@@ -7,11 +7,10 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.getSelectedText;
 
 @ParametersAreNonnullByDefault
-public class LoginPage {
-
+public class LoginPage extends BasePage<LoginPage> {
+    public static final String URL = CFG.authUrl() + "login";
     private final SelenideElement usernameInput = $("input[name='username']");
     private final SelenideElement passwordInput = $("input[name='password']");
     private final SelenideElement submitButton = $("button[type='submit']");

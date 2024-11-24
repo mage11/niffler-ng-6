@@ -4,14 +4,15 @@ import com.codeborne.selenide.Selenide;
 import guru.qa.niffler.condition.Bubble;
 import guru.qa.niffler.condition.Color;
 import guru.qa.niffler.config.Config;
+import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Category;
 import guru.qa.niffler.jupiter.annotation.ScreenShotTest;
+import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.jupiter.annotation.meta.User;
 import guru.qa.niffler.jupiter.annotation.meta.WebTest;
-import guru.qa.niffler.jupiter.annotation.Spending;
 import guru.qa.niffler.model.SpendJson;
 import guru.qa.niffler.model.UserJson;
-import guru.qa.niffler.page.LoginPage;
+import guru.qa.niffler.page.EditSpendingPage;
 import guru.qa.niffler.page.MainPage;
 import guru.qa.niffler.page.component.SpendingTable;
 import guru.qa.niffler.page.component.StatComponent;
@@ -33,13 +34,12 @@ public class SpendingWebTest {
           amount = 79990
       )
   )
+  @ApiLogin
   @Test
   void categoryDescriptionShouldBeChangedFromTable(SpendJson spend) {
     final String newDescription = "Обучение Niffler Next Generation";
     String successMessage = "Spending is edited successfully";
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login("PetyaMain", "123")
-        .headersBlocksShouldBeExists()
+    Selenide.open(MainPage.URL, MainPage.class)
         .editSpending(spend.description())
         .setDescription(newDescription)
         .save()
@@ -49,13 +49,12 @@ public class SpendingWebTest {
   }
 
   @User
+  @ApiLogin
   @Test
   void addNewSpending(UserJson user){
     String categoryName = RandomDataUtils.randomCategoryName();
     String successMessage = "New spending is successfully created";
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
-        .addNewSpending()
+    Selenide.open(EditSpendingPage.URL, EditSpendingPage.class)
         .setAmount("33")
         .setDate("10/21/2024")
         .setCategory(categoryName)
@@ -72,11 +71,11 @@ public class SpendingWebTest {
                amount = 9999
            )
   )
+  @ApiLogin
   @ScreenShotTest(value = "img/stat-expected.jpeg", rewriteExpected = false)
   @Test
   void testStatistic(UserJson user, BufferedImage expected){
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
+      Selenide.open(MainPage.URL, MainPage.class)
         .categoryExistInContainerBelowStat("Обучение", "9999")
         .statisticImgShouldBeLikeExpected(expected);
   }
@@ -89,10 +88,10 @@ public class SpendingWebTest {
           amount = 9999
       )
   )
+  @ApiLogin
   @ScreenShotTest(value = "img/stat-edit-expected.jpeg", rewriteExpected = false)
   void testEditStatistic(UserJson user, BufferedImage expected){
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
+      Selenide.open(MainPage.URL, MainPage.class)
         .categoryExistInContainerBelowStat("Обучение-edit", "9999")
         .editSpending("Обучение Advanced 2.0")
         .setAmount("888")
@@ -111,10 +110,10 @@ public class SpendingWebTest {
           amount = 9999
       )
   )
+  @ApiLogin
   @ScreenShotTest(value = "img/stat-delete-expected.jpeg", rewriteExpected = false)
   void testDeleteStatistic(UserJson user, BufferedImage expected){
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
+      Selenide.open(MainPage.URL, MainPage.class)
         .categoryExistInContainerBelowStat("Обучение-delete", "9999")
         .deleteSpending("Обучение Advanced 2.0")
         .spendingShouldNotBeFound("Обучение Advanced 2.0")
@@ -133,10 +132,10 @@ public class SpendingWebTest {
           amount = 777
       )
   )
+  @ApiLogin
   @ScreenShotTest(value = "img/stat-archived-expected.jpeg", rewriteExpected = true)
   void testArchiveStatistic(UserJson user, BufferedImage expected){
-    Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
+      Selenide.open(MainPage.URL, MainPage.class)
         .categoryExistInContainerBelowStat("Archived", "777")
         .statisticImgShouldBeLikeExpected(expected);
   }
@@ -149,10 +148,10 @@ public class SpendingWebTest {
           amount = 777
       )
   )
+  @ApiLogin
   @Test
   void testStatBubble(UserJson user){
-    StatComponent statComponent = Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
+    StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
         .getStatComponent();
     Selenide.sleep(2000);
     Bubble bubble = new Bubble(Color.yellow, "Обучение 777 ₽");
@@ -179,10 +178,10 @@ public class SpendingWebTest {
           )
       }
   )
+  @ApiLogin
   @Test
   void testStatBubblesInAnyOrder(UserJson user){
-    StatComponent statComponent = Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
+    StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
         .getStatComponent();
     Selenide.sleep(2000);
     Bubble bubble1 = new Bubble(Color.green, "Обучение1 666 ₽");
@@ -210,10 +209,10 @@ public class SpendingWebTest {
           )
       }
   )
+  @ApiLogin
   @Test
   void testStatBubblesContains(UserJson user){
-    StatComponent statComponent = Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
+    StatComponent statComponent = Selenide.open(MainPage.URL, MainPage.class)
         .getStatComponent();
     Selenide.sleep(2000);
     Bubble bubble = new Bubble(Color.yellow, "Обучение2 777 ₽");
@@ -240,10 +239,10 @@ public class SpendingWebTest {
           )
       }
   )
+  @ApiLogin
   @Test
   void testSpendExistingInTable(UserJson user){
-    SpendingTable spendingTable = Selenide.open(CFG.frontUrl(), LoginPage.class)
-        .login(user.username(), user.testData().password())
+    SpendingTable spendingTable = Selenide.open(MainPage.URL, MainPage.class)
         .getSpendingTable();
     spendingTable.checkTable(user.testData().spendings().toArray(new SpendJson[0]));
   }
