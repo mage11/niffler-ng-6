@@ -4,6 +4,7 @@ import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.jupiter.annotation.User;
 import guru.qa.niffler.jupiter.annotation.meta.RestTest;
 import guru.qa.niffler.jupiter.extension.ApiLoginExtension;
+import guru.qa.niffler.model.rest.FriendJson;
 import guru.qa.niffler.model.rest.FriendState;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.impl.GatewayApiClient;
@@ -50,5 +51,59 @@ public class FriendsTest {
             expectedFriends.getLast().username(),
             secondUserFromRequest.username()
         );
+    }
+
+    @User(friends = 2)
+    @ApiLogin
+    @Test
+    void friendshipShouldBeRemoved(@Token String token){
+        final List<UserJson> friendsBefore = gatewayApiClient.allFriends(token, null);
+        Assertions.assertEquals(2, friendsBefore.size());
+
+        final UserJson friend = friendsBefore.getFirst();
+        gatewayApiClient.removeFriend(token, friend.username());
+        final List<UserJson> friendsAfter = gatewayApiClient.allFriends(token, null);
+        Assertions.assertEquals(1, friendsBefore.size());
+        Assertions.assertNotEquals(friend.username(), friendsBefore.getFirst().username());
+    }
+
+    @User(incomeInvitations = 1)
+    @ApiLogin
+    @Test
+    void invitationShouldBeAccepted(@Token String token) {
+        final List<UserJson> invitationsBefore = gatewayApiClient.allFriends(token, null);
+        Assertions.assertEquals(1, invitationsBefore.size());
+
+        final UserJson invitation = invitationsBefore.getFirst();
+        gatewayApiClient.acceptInvitation(token, new FriendJson(invitation.username()));
+        final List<UserJson> friendsAfter = gatewayApiClient.allFriends(token, null);
+        Assertions.assertEquals(1, friendsAfter.size());
+        Assertions.assertEquals(FriendState.FRIEND, friendsAfter.getFirst().friendState());
+    }
+
+    @User(incomeInvitations = 1)
+    @ApiLogin
+    @Test
+    void invitationShouldBeDeclined(@Token String token) {
+        final List<UserJson> invitationsBefore = gatewayApiClient.allFriends(token, null);
+        Assertions.assertEquals(1, invitationsBefore.size());
+
+        final UserJson invitation = invitationsBefore.getFirst();
+        gatewayApiClient.declineInvitation(token, new FriendJson(invitation.username()));
+        final List<UserJson> invitationsAfter = gatewayApiClient.allFriends(token, null);
+        Assertions.assertTrue(invitationsAfter.isEmpty());
+    }
+
+    @User(outcomeInvitations = 1)
+    @ApiLogin
+    @Test
+    void outcomeInviteShouldBeExist(UserJson user, @Token String token){
+        final FriendJson friendship = new FriendJson(user.testData().outcomeInvitations().getFirst().username());
+        gatewayApiClient.sendInvitation(token, friendship);
+
+        final List<UserJson> invitesCurrentUser = gatewayApiClient.allUsers(
+            token,
+            user.testData().outcomeInvitations().getFirst().username());
+        Assertions.assertEquals(invitesCurrentUser.getFirst().friendState(), FriendState.INVITE_SENT);
     }
 }
