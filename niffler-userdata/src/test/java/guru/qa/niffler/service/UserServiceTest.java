@@ -26,8 +26,11 @@ import java.util.UUID;
 import static guru.qa.niffler.model.FriendState.FRIEND;
 import static guru.qa.niffler.model.FriendState.INVITE_SENT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -275,17 +278,16 @@ class UserServiceTest {
     when(userRepository.findByUsername(eq(secondTestUserName)))
         .thenReturn(Optional.ofNullable(secondTestUser));
 
-    FriendshipEntity friendship = new FriendshipEntity();
-    friendship.setRequester(secondTestUser);
-    friendship.setAddressee(mainTestUser);
-    friendship.setStatus(FriendshipStatus.PENDING);
-    mainTestUser.setFriendshipRequests(List.of(friendship));
+    mainTestUser.addInvitations(secondTestUser);
+    secondTestUser.addFriends(FriendshipStatus.PENDING, mainTestUser);
 
     testedObject = new UserService(userRepository);
 
     UserJson userJson = testedObject.declineFriendshipRequest(mainTestUserName, secondTestUserName);
 
     assertEquals(secondTestUserName, userJson.username());
+    assertTrue(secondTestUser.getFriendshipAddressees().isEmpty());
+    assertTrue(mainTestUser.getFriendshipRequests().isEmpty());
     assertNull(userJson.friendState());
   }
 
