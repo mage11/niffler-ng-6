@@ -1,7 +1,9 @@
 package guru.qa.niffler.controller;
 
 
+import guru.qa.niffler.config.NifflerGatewayServiceConfig;
 import guru.qa.niffler.model.SessionJson;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/api/session")
+@SecurityRequirement(name = NifflerGatewayServiceConfig.OPEN_API_AUTH_SCHEME)
 public class SessionController {
 
   @GetMapping("/current")
