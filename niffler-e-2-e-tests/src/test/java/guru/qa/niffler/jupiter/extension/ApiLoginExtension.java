@@ -9,7 +9,7 @@ import guru.qa.niffler.config.Config;
 import guru.qa.niffler.jupiter.annotation.ApiLogin;
 import guru.qa.niffler.jupiter.annotation.Token;
 import guru.qa.niffler.model.rest.CategoryJson;
-import guru.qa.niffler.model.rest.FriendState;
+import guru.qa.niffler.model.rest.FriendshipStatus;
 import guru.qa.niffler.model.rest.SpendJson;
 import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.rest.UserJson;
@@ -67,7 +67,7 @@ public class ApiLoginExtension implements BeforeTestExecutionCallback, Parameter
                     testData.outcomeInvitations().addAll(outcomeInvitations);
 
                     List<UserJson> friends = userApiClient.getAllFriends(apiLogin.username(), null)
-                        .stream().filter(fr -> fr.friendState() == FriendState.FRIEND)
+                        .stream().filter(fr -> fr.friendshipStatus() == FriendshipStatus.FRIEND)
                         .toList();
                     testData.friends().addAll(friends);
 

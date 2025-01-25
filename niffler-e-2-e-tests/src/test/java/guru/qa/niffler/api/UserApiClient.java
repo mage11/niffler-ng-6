@@ -166,7 +166,7 @@ public class UserApiClient extends RestClient implements UsersClient {
     public UserJson acceptInvitation(@Nonnull String username, @Nonnull String targetUsername) {
         final Response<UserJson> response;
         try {
-            response = userApi.acceptInvitation(username, targetUsername)
+            response = userApi.acceptInvitation(targetUsername, username)
                 .execute();
         } catch (IOException e) {
             throw new AssertionError(e);
