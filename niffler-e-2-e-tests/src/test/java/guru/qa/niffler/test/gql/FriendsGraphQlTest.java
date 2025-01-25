@@ -18,7 +18,7 @@ public class FriendsGraphQlTest extends BaseGraphQlTest {
     @User(friends = 1)
     @Test
     @ApiLogin
-    void test(@Token String bearerToken) {
+    void shouldBeNotGetCategoriesOfFriends(@Token String bearerToken) {
         final ApolloCall<FriendsCategoriesQuery.Data> friendsCall = apolloClient.query(FriendsCategoriesQuery.builder()
                 .page(0)
                 .size(5)
