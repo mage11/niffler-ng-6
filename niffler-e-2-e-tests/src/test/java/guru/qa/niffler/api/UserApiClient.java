@@ -2,6 +2,7 @@ package guru.qa.niffler.api;
 
 import com.google.common.base.Stopwatch;
 import guru.qa.niffler.api.core.RestClient;
+import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.UsersClient;
 import guru.qa.niffler.utils.RandomDataUtils;
@@ -76,7 +77,7 @@ public class UserApiClient extends RestClient implements UsersClient {
             while (sw.elapsed(TimeUnit.MILLISECONDS) < maxWaitTime) {
                 UserJson userJson = getCurrentUser(username);
                 if (userJson != null && userJson.id() != null) {
-                    return userJson;
+                    return userJson.addTestData(new TestData(password));
                 }
                 else {
                     Thread.sleep(100);

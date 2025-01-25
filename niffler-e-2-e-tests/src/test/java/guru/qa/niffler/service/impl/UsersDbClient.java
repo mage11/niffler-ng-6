@@ -11,6 +11,7 @@ import guru.qa.niffler.data.repository.UserdataUserRepository;
 import guru.qa.niffler.data.repository.impl.AuthUserRepositoryHibernate;
 import guru.qa.niffler.data.repository.impl.UserdataUserRepositoryHibernate;
 import guru.qa.niffler.data.tpl.XaTransactionTemplate;
+import guru.qa.niffler.model.TestData;
 import guru.qa.niffler.model.rest.CurrencyValues;
 import guru.qa.niffler.model.rest.UserJson;
 import guru.qa.niffler.service.UsersClient;
@@ -58,7 +59,7 @@ public class UsersDbClient implements UsersClient {
                 return UserJson.fromEntity(
                     userdataUserRepository.create(userEntity(username)),
                     null
-                );
+                ).addTestData(new TestData(password));
             }
         );
     }
