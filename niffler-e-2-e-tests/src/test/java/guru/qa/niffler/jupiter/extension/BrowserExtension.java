@@ -14,6 +14,9 @@ import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 
@@ -23,14 +26,27 @@ public class BrowserExtension implements
     TestExecutionExceptionHandler,
     LifecycleMethodExecutionExceptionHandler {
 
+  private static final Logger LOG = LoggerFactory.getLogger(BrowserExtension.class);
+
   static {
-    Configuration.browser = "chrome";
+    String browser = System.getenv("BROWSER");
+    if (browser == null || browser.isEmpty()) {
+      browser = "chrome";
+    }
+    LOG.info("browser is: " + browser);
+    Configuration.browser = browser;
     Configuration.timeout = 8000;
     Configuration.pageLoadStrategy = "eager";
     if ("docker".equals(System.getProperty("test.env"))) {
       Configuration.remote = "http://selenoid:4444/wd/hub";
-      Configuration.browserVersion = "127.0";
-      Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
+
+      if ("firefox".equals(browser)) {
+        Configuration.browserVersion = "125.0";
+        Configuration.browserCapabilities = new FirefoxOptions();
+      } else {
+        Configuration.browserVersion = "127.0";
+        Configuration.browserCapabilities = new ChromeOptions().addArguments("--no-sandbox");
+      }
     }
   }
 

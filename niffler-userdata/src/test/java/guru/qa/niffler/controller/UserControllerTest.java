@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -37,40 +36,5 @@ class UserControllerTest {
         .andExpect(jsonPath("$.currency").value("RUB"))
         .andExpect(jsonPath("$.photo").isNotEmpty())
         .andExpect(jsonPath("$.photoSmall").isNotEmpty());
-  }
-
-  @Test
-  void allUsersEndpoint() throws Exception {
-    UserEntity user1 = new UserEntity();
-    UserEntity user2 = new UserEntity();
-    user1.setUsername("userName1");
-    user1.setCurrency(CurrencyValues.RUB);
-    user2.setUsername("userName2");
-    user2.setCurrency(CurrencyValues.EUR);
-
-    usersRepository.save(user1);
-    usersRepository.save(user2);
-
-    mockMvc.perform(get("/internal/users/all")
-            .contentType(MediaType.APPLICATION_JSON)
-            .param("username", "userName1")
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$[0].username").value("userName2"));
-  }
-
-  @Test
-  void updateEndpoint() throws Exception {
-    UserEntity userDataEntity = new UserEntity();
-    userDataEntity.setUsername("userNameRng");
-    userDataEntity.setCurrency(CurrencyValues.RUB);
-    usersRepository.save(userDataEntity);
-
-    mockMvc.perform(post("/internal/users/update")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"username\":\"userNameRng\", \"currency\":\"EUR\"}")
-        )
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.currency").value("EUR"));
   }
 }

@@ -9,8 +9,8 @@ services:
       - TZ=GMT+3
       - PGTZ=GMT+3
     volumes:
-      - ./postgres/script:/docker-entrypoint-initdb.d
       - ./postgres/conf/postgresql.conf:/etc/postgresql.conf
+      - ./postgres/init-database.sh:/docker-entrypoint-initdb.d/init-database.sh
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
       interval: 3s
@@ -147,6 +147,7 @@ services:
     volumes:
       - ./selenoid:/etc/selenoid
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./selenoid/browsers.json:/etc/selenoid/browsers.json
     environment:
       - TZ=Europe/Moscow
     restart: unless-stopped
@@ -183,6 +184,7 @@ services:
       - BUILD_URL=${BUILD_URL}
       - HEAD_COMMIT_MESSAGE=${HEAD_COMMIT_MESSAGE}
       - EXECUTION_TYPE=${EXECUTION_TYPE}
+      - BROWSER=${BROWSER}
     volumes:
       - allure-results:/niffler/niffler-e-2-e-tests/build/allure-results
     depends_on:
