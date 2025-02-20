@@ -23,11 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static guru.qa.niffler.model.FriendState.FRIEND;
-import static guru.qa.niffler.model.FriendState.INVITE_SENT;
+import static guru.qa.niffler.model.FriendshipStatus.FRIEND;
+import static guru.qa.niffler.model.FriendshipStatus.INVITE_SENT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -156,12 +154,12 @@ class UserServiceTest {
     final List<UserJsonBulk> users = testedObject.allUsers(mainTestUserName, null);
     assertEquals(2, users.size());
     final UserJsonBulk invitation = users.stream()
-        .filter(u -> u.friendState() == INVITE_SENT)
+        .filter(u -> u.friendshipStatus() == INVITE_SENT)
         .findFirst()
         .orElseThrow(() -> new AssertionError("Friend with state INVITE_SENT not found"));
 
     final UserJsonBulk friend = users.stream()
-        .filter(u -> u.friendState() == null)
+        .filter(u -> u.friendshipStatus() == null)
         .findFirst()
         .orElseThrow(() -> new AssertionError("user without status not found"));
 
@@ -230,7 +228,7 @@ class UserServiceTest {
     UserJson userJson = testedObject.createFriendshipRequest(mainTestUserName, secondTestUserName);
 
     assertEquals(secondTestUserName, userJson.username());
-    assertEquals(INVITE_SENT, userJson.friendState());
+    assertEquals(INVITE_SENT, userJson.friendshipStatus());
   }
 
   @Test
@@ -250,7 +248,7 @@ class UserServiceTest {
 
     UserJson userJson = testedObject.acceptFriendshipRequest(mainTestUserName, secondTestUserName);
 
-    assertEquals(FRIEND, userJson.friendState());
+    assertEquals(FRIEND, userJson.friendshipStatus());
   }
 
   @Test
@@ -288,7 +286,7 @@ class UserServiceTest {
     assertEquals(secondTestUserName, userJson.username());
     assertTrue(secondTestUser.getFriendshipAddressees().isEmpty());
     assertTrue(mainTestUser.getFriendshipRequests().isEmpty());
-    assertNull(userJson.friendState());
+    assertNull(userJson.friendshipStatus());
   }
 
   private List<UserWithStatus> getMockUsersMappingFromDb() {

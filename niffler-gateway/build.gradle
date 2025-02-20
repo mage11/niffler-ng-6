@@ -77,7 +77,7 @@ jib {
     }
     to {
         image = "${project.ext.dockerHubName}/${project.name}-${System.env.PROFILE}"
-        tags = ['latest', "${project.version}"]
+        tags = ['latest']
     }
 }
 
