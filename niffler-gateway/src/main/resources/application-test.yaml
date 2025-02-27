@@ -5,6 +5,12 @@ spring:
       - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
 
+grpc:
+  client:
+    grpcCurrencyClient:
+      address: 'static://127.0.0.1:8091'
+      negotiationType: PLAINTEXT
+
 niffler-currency:
   base-uri: 'http://127.0.0.1:8091'
 niffler-userdata:
