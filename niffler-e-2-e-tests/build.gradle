@@ -149,6 +149,8 @@ dependencies {
     // Wiremock
     testImplementation "org.wiremock:wiremock:${project.ext.wiremockVersion}"
     testImplementation "org.wiremock:wiremock-jetty12:${project.ext.wiremockVersion}"
+//    testImplementation "com.github.tomakehurst:wiremock-jre8:3.0.1"
+//    testImplementation "com.github.tomakehurst:wiremock-standalone:3.0.1"
     // Lombok
     testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
